@@ -1,0 +1,445 @@
+<template>
+  <div class="w1200 clearfix">
+    <div class="w840 fll">
+      <div class="bread">
+        <span>
+          <router-link to="/home">首页 ></router-link>
+        </span>
+        <span>{{$route.meta.title}}</span>
+      </div>
+      <div class="pd-15">
+        <span class="act_type">分类：</span>
+        <span
+          class="type_item"
+          v-for="(item , index) in categoryList"
+          :key="index"
+          @click="getType(item.dataValue,index)"
+          :class="{active:item.checked}"
+        >{{item.dataName}}</span>
+      </div>
+      <div class="pd-15">
+        <span class="act_type">状态：</span>
+        <span
+          class="type_item"
+          v-for="(item , index) in statusList"
+          :key="index"
+          @click="getStatus(item.statusValue,index)"
+          :class="{active:item.checked}"
+        >{{item.statusName}}</span>
+      </div>
+      <div v-loading="loading">
+        <div class="act_list clearfix" v-for="(item, index) in pageList" :key="index">
+          <router-link :to="{name:'activityDetail',query:{id:item.id}}">
+          <img :src="$url + item.imgPath" alt width="270px" height="180px" class="fll">
+          <div class="fll list">
+            <p class="list-title">{{item.title}}</p>
+            <p class="list-content">
+              <i class="local"></i>
+              {{item.address}}
+            </p>
+            <p class="list-content">
+              <i class="company"></i>
+              {{item.speaker}}
+            </p>
+            <p class="list-content2">
+              <i class="num"></i>
+              报名人数：{{item.applyNumStr}}
+            </p>
+            <p class="list-content2">
+              <i class="time"></i>
+              报名时间：{{item.startTimeStr}} 至 {{item.endTimeStr}}
+            </p>
+          </div>
+          </router-link>
+          <div class="flr">
+            <span :class="item.status == 1 ? 'apply' : 'over'">{{item.statusStr}}</span>
+            <button
+              :class="item.status == 1 ? 'applyBtn' : 'overBtn'"
+              @click="apply(item.status,item.id)"
+            >{{item.status == 1 ? '我要报名' :'' + item.status == 0 ? '尚未开始':'' + item.status == 3 ? '活动结束' : ''}}</button>
+          </div>
+        </div>
+      </div>
+      <div class="load_more" @click="more" v-if="this.totalCount > this.pageList.length">加载更多...</div>
+      <p v-else>-------------------------------------------------没有更多活动了----------------------------------------------------</p>
+    </div>
+
+    
+    <div class="w360 flr mes_list clearfix">
+      <img src="/static/img/list-2.jpg" alt class="act_timelist">
+      <p class="mes">热门资讯
+        <span class="mes_more flr" @click="$router.push('/message')">更多></span>
+      </p>
+      <ul class="mes_title" v-loading="newsloading">
+          <li v-for="(item,index) in mesData" :key="index" class="mes_content">
+            <router-link :to="{name:'messageDetail',query:{id:item.id}}">
+              <span class="cl-0">{{item.title}}</span>
+            </router-link>
+          </li>
+      </ul>
+      <img src="/static/img/bg-3.jpg" alt="" width="360px" height="350px" style="margin-bottom:75px">
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      categoryList: [],
+      // statusList: ["报名中", "未开始", "已结束", "往期活动", "筛选"],
+      statusList: [],
+      pageList: [],
+      mesData: [
+        {
+          content:'“ofo小黄车退了么”成为了关注焦点；中移动受让中国民航信息5.01%股权'
+        },
+        {
+          content:'“ofo小黄车退了么”成为了关注焦点；中移动受让中国民航信息5.01%股权'
+        },
+        {
+          content:'“ofo小黄车退了么”成为了关注焦点；中移动受让中国民航信息5.01%股权'
+        },
+        {
+          content:'“ofo小黄车退了么”成为了关注焦点；中移动受让中国民航信息5.01%股权'
+        },
+        {
+          content:'“ofo小黄车退了么”成为了关注焦点；中移动受让中国民航信息5.01%股权'
+        },
+        {
+          content:'“ofo小黄车退了么”成为了关注焦点；中移动受让中国民航信息5.01%股权'
+        },
+      ],
+      loading:false,
+      newsloading:false,
+      category:'',
+      status:'',
+      pn:1,
+      totalCount:'',
+    };
+  },
+  methods: {
+    getTypeData(){
+      this.$axios.get('/jsp/wap/trActivity/ctrl/jsonCategoryList.jsp').then(res => {
+        if(res.success == "true"){
+          let categoryList = res.data.categoryList
+          categoryList.forEach(item => {
+            this.$set(item, 'checked', false)
+          });
+          this.categoryList = categoryList
+          let statusList = res.data.statusList
+          statusList.forEach(item => {
+            this.$set(item, 'checked', false)
+          });
+          this.statusList = statusList
+        }
+      })
+    },
+    getActData(category,status){
+      this.loading = true
+      this.$axios.get('/jsp/wap/trActivity/ctrl/jsonActivityPage.jsp',{params:{categorys:category,statuss:status}}).then(res => {
+        if(res.success == "true"){
+          this.pageList = res.data.pageList
+          this.totalCount = res.data.pagination.totalCount
+          this.pn = 1
+          this.loading = false
+        }
+      })
+    },
+    more(){
+      this.pn += 1
+      this.loading = true
+      this.$axios.get('/jsp/wap/trActivity/ctrl/jsonActivityPage.jsp',{params:{categorys:this.category,statuss:this.status,pageNumber:this.pn}}).then(res => {
+        if(res.success == "true"){
+          this.pageList = [...this.pageList,...res.data.pageList] 
+          this.totalCount = res.data.pagination.totalCount
+          this.loading = false
+        }
+      })
+    },
+    getType(e,index) {
+      this.category = e
+      if(this.categoryList[index].checked){
+        this.categoryList[index].checked = !this.categoryList[index].checked
+        this.category = ''
+      } else {
+          this.categoryList.forEach(item => {
+              item.checked = false
+        });
+        this.categoryList[index].checked = true
+      }
+      this.getActData(this.category,this.status)
+    },
+    getStatus(e,index) {
+      this.status = e
+      if(this.statusList[index].checked){
+        this.statusList[index].checked = !this.statusList[index].checked
+        this.status = ''
+      } else {
+          this.statusList.forEach(item => {
+              item.checked = false
+        });
+        this.statusList[index].checked = true
+      }
+      this.getActData(this.category,this.status)
+    },
+    getNewsList(){
+      this.newsloading = true;
+      this.$axios
+        .get("/jsp/wap/trNews/ctrl/jsonHotNewsList.jsp",)
+        .then(res => {
+          if (res.success == "true") {
+            this.mesData = res.data
+            this.newsloading = false;
+          }
+        });
+    },
+    apply(e,id) {
+      if(e == 0){
+        this.$notify.error({
+          title: "错误",
+          message: "活动尚未开始"
+        });
+      } else if (e == 1) {
+      this.$router.push({name:'activityDetail',query:{id}})
+      } else if (e == 3){
+        this.$notify.error({
+          title: "错误",
+          message: "活动已结束"
+        });
+      }
+    },
+    
+  },
+  created(){
+    this.getTypeData()
+    this.getActData(this.category,this.status)
+    this.getNewsList()
+  }
+};
+</script>
+
+<style scoped lang="scss">
+//选择类型
+.act_type {
+  font-size: 14px;
+  font-family: "Microsoft YaHei";
+  color: rgb(51, 51, 51);
+  font-weight: bold;
+  line-height: 1.857;
+}
+.type_item {
+  font-size: 12px;
+  font-family: "Microsoft YaHei";
+  color: #444;
+  cursor: pointer;
+  padding-right: 45px;
+}
+//活动列表
+.act_list {
+  width: 810px;
+  height: 180px;
+  margin-bottom: 20px;
+}
+.list {
+  margin-left: 20px;
+}
+.list-title {
+  font-size: 20px;
+  font-family: "Microsoft YaHei";
+  color: rgb(51, 51, 51);
+  margin: 10px 0 25px;
+}
+.list-content {
+  margin-left: 30px;
+  font-size: 14px;
+  font-family: "Microsoft YaHei";
+  color: rgb(128, 128, 128);
+  position: relative;
+  .local {
+    position: absolute;
+    display: inline-block;
+    top: -3px;
+    left: -30px;
+    width: 20px;
+    height: 20px;
+    background: url(/static/img/local.png) no-repeat center;
+    background-size: contain;
+  }
+  .company {
+    position: absolute;
+    display: inline-block;
+    top: -3px;
+    left: -30px;
+    width: 20px;
+    height: 20px;
+    background: url(/static/img/company.png) no-repeat center;
+    background-size: contain;
+  }
+}
+.list-content2 {
+  margin-left: 30px;
+  font-size: 14px;
+  font-family: "Microsoft YaHei";
+  color: rgb(153, 153, 153);
+  position: relative;
+  .num {
+    position: absolute;
+    display: inline-block;
+    top: -3px;
+    left: -30px;
+    width: 20px;
+    height: 20px;
+    background: url(/static/img/num.png) no-repeat center;
+    background-size: contain;
+  }
+  .time {
+    position: absolute;
+    display: inline-block;
+    top: -3px;
+    left: -30px;
+    width: 20px;
+    height: 20px;
+    background: url(/static/img/time.png) no-repeat center;
+    background-size: contain;
+  }
+}
+.apply {
+  display: block;
+  text-align: right;
+  font-size: 16px;
+  font-family: "Microsoft YaHei";
+  color: #ff9440;
+  font-weight: bold;
+  margin-top: 10px;
+}
+.over {
+  display: block;
+  text-align: right;
+  font-size: 16px;
+  font-family: "Microsoft YaHei";
+  color: #999;
+  font-weight: bold;
+  margin-top: 10px;
+}
+.applyBtn {
+  width: 110px;
+  height: 35px;
+  color: #fff;
+  line-height: 0.425;
+  display: inline-block;
+  white-space: nowrap;
+  cursor: pointer;
+  background: #005982;
+  border: 1px solid #dcdfe6;
+  border-color: #dcdfe6;
+  -webkit-appearance: none;
+  text-align: center;
+  box-sizing: border-box;
+  outline: none;
+  margin: 0;
+  margin-top: 100px;
+  transition: 0.1s;
+  font-weight: 500;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+}
+.overBtn {
+  width: 110px;
+  height: 35px;
+  color: #c4c4c4;
+  line-height: 0.425;
+  display: inline-block;
+  white-space: nowrap;
+  cursor: pointer;
+  background: #e6e6e6;
+  border: 1px solid #dcdfe6;
+  border-color: #dcdfe6;
+  -webkit-appearance: none;
+  text-align: center;
+  box-sizing: border-box;
+  outline: none;
+  margin: 0;
+  margin-top: 100px;
+  transition: 0.1s;
+  font-weight: 500;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+}
+//加载更多
+.load_more {
+  width: 810px;
+  text-align: center;
+  font-size: 18px;
+  font-family: "Microsoft YaHei";
+  color: rgb(153, 153, 153);
+  line-height: 1.333;
+  padding: 20px 0;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  margin: 40px 0 75px;
+  cursor: pointer;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+.load_more:active {
+  background: #fff;
+  border-color: #409eff;
+  color: #409eff;
+}
+//活动排表
+.act_timelist {
+  margin: 20px 0;
+}
+
+.mes_list {
+  .mes {
+    font-size: 18px;
+    font-family: "Microsoft YaHei";
+    color: rgb(51, 51, 51);
+    line-height: 1.333;
+    text-align: left;
+    padding-left: 20px;
+    border-left: 3px solid #005982;
+    .mes_more {
+      font-size: 12px;
+      font-family: "SimSun";
+      color: #999;
+      line-height: 2;
+      cursor: pointer;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+  }
+}
+.mes_title {
+  border-top: 1px solid #d9d9d9;
+  padding-left: 20px;
+}
+.mes_content {
+  padding: 20px 0;
+  border-bottom:1px dashed #d9d9d9;
+  color: #d9d9d9;
+}
+.mes_content:hover {
+  color: #005982;
+}
+.cl-0 {
+  color: #000;
+}
+.cl-0:hover {
+  color: #005982;
+}
+.active {
+  color: #005982;
+  font-weight: 700;  
+}
+</style>

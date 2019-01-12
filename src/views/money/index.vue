@@ -1,0 +1,572 @@
+<template>
+
+    <div>
+        <vue-drawer-layout ref="drawerLayout" :reverse="true" @mask-click="handleMaskClick">
+            <div class="drawer" slot="drawer">
+                <div class="text">
+                    <div class="chooseBox">
+                        <div class="title">投资筛选</div>
+                        <div class="choose">
+                            <div class="sbuTitle clearfix">
+                                <span class="fll">投资行业</span>
+                                <i class="iconfont icon-xiangxia flr" v-if="!isShow2" @click="handleShowList2"></i>
+                                <i class="iconfont icon-xiangshang flr" v-else @click="handleCloseList2"></i>
+                            </div>
+                            <div class="type" v-show="isShow2">
+                                <span class="radioItem" v-for="(item,index) in investIndustryList" :key="index" :class="{active:item.checked}" @click="investIndustry(item.dataValue,index)">{{item.dataName}}</span>
+                            </div>
+                            <div class="sbuTitle clearfix">
+                                <span class="fll">资金类型</span>
+                                <i class="iconfont icon-xiangxia flr" v-if="!isShow" @click="handleShowList"></i>
+                                <i class="iconfont icon-xiangshang flr" v-else @click="handleCloseList"></i>
+                            </div>
+                            <div class="type" v-show="isShow">
+
+                                <span class="radioItem" v-for="(item,index) in investTypeList" :key="index" :class="{active:item.checked}" @click="investType(item.dataValue,index)">{{item.dataName}}</span>
+                            </div>
+                            <div class="sbuTitle clearfix">
+                                <span class="fll">所属地区（可多选）</span>
+                                <i class="iconfont icon-xiangxia flr" v-if="!isShow1" @click="handleShowList1"></i>
+                                <i class="iconfont icon-xiangshang flr" v-else @click="handleCloseList1"></i>
+                            </div>
+                            <div class="type" v-show="isShow1">
+                                 <van-checkbox-group v-model="regionArea" @change="regionAreaItem">
+                                    <van-checkbox v-for="(item, index) in regionList" :key="index" :name="item" class="checkItem" checked-color="#005982">
+                                        {{ item.dataName }}
+                                    </van-checkbox>
+                                </van-checkbox-group>
+                                <!-- <span class="radioItem" v-for="(item,index) in regionList" :key="index" :class="{active:item.checked}" @click="region(item.dataValue,index)">{{item.dataName}}</span> -->
+                            </div>
+                            <div class="sbuTitle clearfix">
+                                <span class="fll">投资地区（可多选）</span>
+                                <i class="iconfont icon-xiangxia flr" v-if="!isShow3" @click="handleShowList3"></i>
+                                <i class="iconfont icon-xiangshang flr" v-else @click="handleCloseList3"></i>
+                            </div>
+                            <div class="type" v-show="isShow3">
+                                 <van-checkbox-group v-model="investRegionArea" @change="investRegionItem">
+                                    <van-checkbox v-for="(item, index) in investRegionList" :key="index" :name="item" class="checkItem" checked-color="#005982">
+                                        {{ item.dataName }}
+                                    </van-checkbox>
+                                </van-checkbox-group>
+                                <!-- <span class="radioItem" v-for="(item,index) in investRegionList" :key="index" :class="{active:item.checked}" @click="investRegion(item.dataValue,index)">{{item.dataName}}</span> -->
+                            </div>
+                            <div class="sbuTitle clearfix">
+                                <span class="fll">投资金额</span>
+                                <i class="iconfont icon-xiangxia flr" v-if="!isShow4" @click="handleShowList4"></i>
+                                <i class="iconfont icon-xiangshang flr" v-else @click="handleCloseList4"></i>
+                            </div>
+                            <div class="type" v-show="isShow4">
+                                <span class="radioItem" v-for="(item,index) in investAmountList" :key="index" :class="{active:item.checked}" @click="investAmount(item.dataValue,index)">{{item.dataName}}</span>
+                            </div>
+                        </div>
+                        <div class="clearfix sureChoose">
+                            <mu-button class="chooseBtn fll" @click="handleRemove">清空</mu-button>
+                            <mu-button class="chooseBtn flr sure" @click="handleSure">确定</mu-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content" slot="content">
+                <div class="text">
+                    <div class="index">
+                        <div class="header clearfix">
+                            <div class="flr" @click="$router.push('/issueMoney')"><button class="sendMoney">发布资金</button></div>
+                            <div class="search fll">
+                                <input type="text" placeholder="请输入内容" class="input_search" />
+                                <i class="iconfont icon-sousuo1"></i>
+                            </div>
+                            
+                        </div>
+                        <div class="detail">
+                            <div class="chooseTitle">
+                                <div>综合排序</div>
+                                <div>时间排序</div>
+                                <div @click="handleToggleDrawer">筛选</div>
+                            </div>
+                            <div v-infinite-scroll="loadMore" infinite-scroll-disabled="loading">
+                                <div class="moneyList" v-for="(item,index) in pageList" :key="index">
+                                    <router-link :to="{path:'/money/moneyDetail',query:{id:item.id}}">
+                                        <div class="moneyTitle">{{item.title}}</div>
+                                        <div class="moneyDetail">{{item.investRequire}}</div>
+                                    </router-link>
+                                    <div class="clearfix">
+                                        <div class="fll moneyTime">
+                                            <i class="iconfont icon-shijian"></i>
+                                            <span>{{item.addTimeStr}}</span>
+                                        </div>
+                                        <div class="sendBtn flr" @click="$router.push('/sendProject')">
+                                            <!-- {{item.sendBtn}} -->
+                                            投递项目
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="noData" v-if="this.totalCount > this.pageList.length">加载中...</div>
+                                    <div class="noData" v-else>--- 没有更多数据了 ---</div>
+                                </div>
+                            </div>
+                        </div>
+                        <Footer class="footer"></Footer>
+                    </div>
+                </div>
+            </div>
+        </vue-drawer-layout>
+    </div>
+
+</template>
+
+<script>
+    import Header from "@/components/Header.vue"
+    import Footer from "@/components/Bottom.vue"
+    import Choose from "@/views/money/choose.vue";
+    export default {
+        components: {
+            Footer,
+            Header,
+            Choose
+        },
+        data() {
+            return {
+                pageList: [],
+                loading: false,
+                pn: 1,
+                pageNumber:1,
+                totalCount: [],
+                // 
+                isShow: false,
+                isShow1: false,
+                isShow2: false,
+                isShow3: false,
+                isShow4: false,
+                result: [],
+
+                investAmountList: [],
+                investIndustryList: [],
+                investRegionList: [],
+                investTypeList: [],
+                regionList: [],
+
+                investAmounts: "",
+                investIndustrys: "",
+                investRegions: "",
+                investTypes: "",
+                regions: "",
+
+                investRegionArea:[],
+                regionArea:[]
+            }
+        },
+        methods: {
+            // 打开筛选
+            handleToggleDrawer() {
+                this.$refs.drawerLayout.toggle();
+            },
+            // 关闭筛选
+            handleMaskClick() {
+                console.info('mask-click');
+                this.$refs.drawerLayout.toggle(false);
+            },
+            // 获取更多
+            loadMore() {
+                this.pn = this.pn + 1
+                this.loading = true
+                this.$axios.get('/jsp/wap/trCapital/ctrl/jsonCapitalPage.jsp?region=150000',
+                    {
+                        params: {
+                            investAmounts: this.investAmounts, investIndustrys: this.investIndustrys, investRegions: this.investRegions,
+                            investTypes: this.investTypes, regions: this.regions, pageNumber: this.pn
+                        }
+                    }).then(res => {
+                        if (res.success == "true") {
+                            this.pageList = [...this.pageList, ...res.data.pageList]
+                            this.totalCount = res.data.pagination.totalCount
+                            this.loading = false
+                        }
+                    })
+            },
+            // 投资列表
+            getDatalList(investAmounts, investIndustrys, investRegions, investTypes, regions) {
+                this.loading = true
+                this.$axios.get("/jsp/wap/trCapital/ctrl/jsonCapitalPage.jsp?region=150000", {
+                    params: {
+                        investAmounts
+                        , investIndustrys, investRegions, investTypes, regions
+                    }
+                }).then(res => {
+                    console.log("投资列表", res)
+                    if (res.success == "true") {
+                        this.pageList = res.data.pageList
+                        this.totalCount = res.data.pagination.totalCount
+                        this.pn = 1
+                        this.loading = false
+                    }
+                })
+            },
+            // 下拉/收起
+            handleShowList() { this.isShow = true },
+            handleCloseList() { this.isShow = false },
+            handleShowList1() { this.isShow1 = true },
+            handleCloseList1() { this.isShow1 = false },
+            handleShowList2() { this.isShow2 = true },
+            handleCloseList2() { this.isShow2 = false },
+            handleShowList3() { this.isShow3 = true },
+            handleCloseList3() { this.isShow3 = false },
+            handleShowList4() { this.isShow4 = true },
+            handleCloseList4() { this.isShow4 = false },
+            // 投资分类   
+            getTypeData() {
+                this.$axios.get(`/jsp/wap/trCapital/ctrl/jsonCategoryList.jsp`).then(res => {
+                    console.log("投资分类", res)
+                    if (res.success == "true") {
+                        let investAmountList = res.data.investAmountList
+                        investAmountList.forEach(item => {
+                            this.$set(item, 'checked', false)
+                        });
+                        this.investAmountList = investAmountList
+
+                        let investIndustryList = res.data.investIndustryList
+                        investIndustryList.forEach(item => {
+                            this.$set(item, 'checked', false)
+                        });
+                        this.investIndustryList = investIndustryList
+
+                        let investRegionList = res.data.investRegionList
+                        investRegionList.forEach(item => {
+                            this.$set(item, 'checked', false)
+                        });
+                        this.investRegionList = investRegionList
+
+                        let regionList = res.data.regionList
+                        regionList.forEach(item => {
+                            this.$set(item, 'checked', false)
+                        });
+                        this.regionList = regionList
+
+                        let investTypeList = res.data.investTypeList
+                        investTypeList.forEach(item => {
+                            this.$set(item, 'checked', false)
+                        });
+                        this.investTypeList = investTypeList
+                    }
+                })
+            },
+            // 投资方式筛选
+            investType(e, index) {
+                this.investTypes = e
+                if (this.investTypeList[index].checked) {
+                    this.investTypeList[index].checked = !this.investTypeList[index].checked
+                    this.investTypes = ''
+                } else {
+                    this.investTypeList.forEach(item => {
+                        item.checked = false
+                    });
+                    this.investTypeList[index].checked = true
+                }
+            },
+            // 投资金额筛选
+            investAmount(e, index) {
+                this.investAmounts = e
+                if (this.investAmountList[index].checked) {
+                    this.investAmountList[index].checked = !this.investAmountList[index].checked
+                    this.investAmounts = ''
+                } else {
+                    this.investAmountList.forEach(item => {
+                        item.checked = false
+                    });
+                    this.investAmountList[index].checked = true
+                }
+            },
+            // 所属地区筛选
+            // region(e, index) {
+            //     this.regions = e
+            //     if (this.regionList[index].checked) {
+            //         this.regionList[index].checked = !this.regionList[index].checked
+            //         this.regions = ''
+            //     } else {
+            //         this.regionList.forEach(item => {
+            //             item.checked = false
+            //         });
+            //         this.regionList[index].checked = true
+            //     }
+            // },
+            regionAreaItem(val) {
+                let regionList = []
+                val.forEach(item => {
+                    regionList.push(item.dataValue)
+                })
+                this.regions = regionList.join(',')
+            },
+            investRegionItem(val) {
+                let investRegionList = []
+                val.forEach(item => {
+                    investRegionList.push(item.dataValue)
+                })
+                this.investRegions = investRegionList.join(',')
+            },
+            // 投资地区筛选
+            // investRegion(e, index) {
+            //     this.investRegions = e
+            //     if (this.investRegionList[index].checked) {
+            //         this.investRegionList[index].checked = !this.investRegionList[index].checked
+            //         this.investRegions = ''
+            //     } else {
+            //         this.investRegionList.forEach(item => {
+            //             item.checked = false
+            //         });
+            //         this.investRegionList[index].checked = true
+            //     }
+            // },
+            // 投资行业筛选
+            investIndustry(e, index) {
+                this.investIndustrys = e
+                if (this.investIndustryList[index].checked) {
+                    this.investIndustryList[index].checked = !this.investIndustryList[index].checked
+                    this.investIndustrys = ''
+                } else {
+                    this.investIndustryList.forEach(item => {
+                        item.checked = false
+                    });
+                    this.investIndustryList[index].checked = true
+                }
+            },
+            // 清空
+            handleRemove() {
+                
+            },
+            // 确定
+            handleSure() {
+                this.getDatalList(this.investAmounts, this.investIndustrys, this.investRegions, this.investTypes, this.regions)
+                this.$refs.drawerLayout.toggle(false);
+
+            }
+        },
+        created() {
+            this.getDatalList(this.investAmounts, this.investIndustrys, this.investRegions, this.investTypes, this.regions)
+            this.getTypeData()
+        }
+    }
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="scss">
+    .detail {
+        padding-bottom: 1.2rem;
+        // background: #fafafa;
+    }
+
+    img {
+        width: 100%
+    }
+
+    /* 头部 */
+
+    .search {
+        margin: .2rem;
+        background: #fafafa
+    }
+
+    .icon-sousuo {
+        line-height: 2
+    }
+
+    .sendMoney {
+        border: 0;
+        background: none;
+        color: #005982;
+        padding-right: .3rem;
+        line-height: 3
+    }
+
+    .sendMoney:focus {
+        outline: none;
+    }
+
+    .input_search {
+        border: 0;
+        color: rgb( 153, 153, 153);
+        width: 4.8rem;
+        border-radius: 4px;
+        font-family: "PingFang";
+        line-height: 2.103;
+        padding: 0 .2rem;
+        background: #fafafa
+    }
+
+    .input_search:focus {
+        outline: none;
+    }
+
+    .input_search::-webkit-input-placeholder {
+        padding-left: .3rem
+    }
+
+    /* End */
+
+    .index {
+        height: 100vh;
+    }
+
+    .content {
+        overflow: scroll;
+    }
+
+    /* 筛选 */
+
+    .chooseTitle {
+        background: #fff;
+        border-top: 1px solid #fafafa;
+        display: flex;
+        justify-content: space-around;
+        padding: .3rem 0;
+        margin-bottom: .2rem
+    }
+
+    /* End */
+
+    /* 列表 */
+
+    .moneyList {
+        padding: .3rem;
+        background: #fff;
+        border-bottom: .2rem solid #fafafa
+    }
+
+    .moneyTitle {
+        font-size: .27rem;
+        font-family: "PingFang";
+        color: rgb( 62, 58, 57);
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .moneyDetail {
+        font-size: .24rem;
+        margin: .2rem 0;
+        font-family: "PingFang";
+        color: rgb( 137, 137, 137);
+        line-height: 1.5;
+        text-align: justifyLeft;
+        text-overflow: -o-ellipsis-lastline;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .moneyTime {
+        font-family: "PingFang";
+        color: #ccc;
+        line-height: 1.385;
+        span {
+            font-size: .22rem
+        }
+    }
+
+    .sendBtn {
+        border: 1px solid #005982;
+        border-radius: 2px;
+        display: inline-block;
+        color: #005982;
+        padding: .1rem .2rem;
+        line-height: 1.25;
+        font-family: "PingFang";
+        font-size: .23rem;
+        font-weight: bold;
+        opacity: .7;
+    }
+
+    /* End */
+
+    .checkItem {
+        width: 100%;
+        padding: 0 .2rem;
+        line-height: 2;
+        border-bottom: 1px dashed #fafafa;
+    }
+
+    /* ---筛选--- */
+
+    .chooseBox {
+        background: #fff;
+    }
+
+    .choose {
+        overflow: scroll;
+        height: 100vh;
+        padding-bottom: 2rem
+    }
+
+    .title {
+        text-align: center;
+        line-height: 3;
+        border-bottom: 1px solid #fafafa
+    }
+
+    .sbuTitle {
+        font-size: .28rem;
+        font-family: "PingFang";
+        color: rgb( 51, 51, 51);
+        font-weight: bold;
+        line-height: 4;
+        padding: 0 .2rem;
+        border-bottom: 1px solid #fafafa;
+    }
+
+    .type {
+        display: flex;
+        flex-wrap: wrap;
+        border-bottom: 1px solid #fafafa;
+        padding: .2rem .2rem .3rem;
+    }
+
+    .radioItem {
+        background: #eee;
+        color: rgb( 102, 102, 102);
+        width: 1.66rem;
+        height: .6rem;
+        line-height: .6rem;
+        text-align: center;
+        border-radius: 10%;
+        margin-right: .2rem;
+        margin-top: .2rem;
+        font-size: .24rem;
+        font-family: "PingFang";
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .radioItem input {
+        // visibility: hidden;
+         // display: none
+    }
+
+    .active {
+        background: #005982;
+        color: #fff;
+    }
+
+    .sureChoose {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+    }
+
+    .chooseBtn {
+        width: 50%;
+        padding: .6rem 0;
+        font-size: .3rem;
+    }
+
+    .sure {
+        background: #005982;
+        color: #fff
+    }
+
+    /* 多选框 */
+
+    #moneyType {
+        width: 2rem
+    }
+</style>
