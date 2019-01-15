@@ -1,22 +1,24 @@
 <template>
-    <div class="all" :data="newsDetail">
+    <div class="all">
         <Header></Header>
         <div class="containerAll">
             <div class="detail">
                 <div class="headerWarp">
-                    <div class="title">{{newsDetail.title}}</div>
+                    <div class="title">开拓绿色能源自主创新之路</div>
                     <div class="clearfix">
                         <div class="fll">
-                            <span>作者：</span><span>{{newsDetail.author}}</span><span>(来源：<span>{{newsDetail.source}}</span> )</span>
+                            <span>作者：</span><span>张璐 何牧文</span><span>(来源：<span>天津日报</span> )</span>
                         </div>
-                        <div class="flr"><span>{{newsDetail.addTimeStr}}</span></div>             
+                        <div class="flr"><span>2019-01-09 15:14:58</span></div>             
                     </div>
                 </div>
                 <div>
                     <div class="contentImg">
-                        <img :src="$url + newsDetail.imgPath" alt="">
+                        <img src="http://39.96.39.111:6022/upload/45/45c3441d9485f25c333ca2d4d607cae8/file.jpg" alt="">
                     </div>
-                    <div class="contentText" v-html="newsDetail.content"></div>     
+                    <div class="contentText">
+                    <p style="text-align: left; text-indent: 2em;">在8日召开的国家科学技术奖励大会上，南开大学化学学院陈永胜教授领衔完成的“面向能源转化与存储的有机和碳纳米材料研究”项目荣获国家自然科学奖二等奖。接受采访时陈永胜表示：“作为世界各国在新能源研究中竞争最为激烈的领域之一，开发并引领具有独立的自主知识产权的有机太阳能电池材料和技术，为我国赢得先机，一直是这一领域内中国科学家的努力方向。”</p> 
+                        </div>    
                 </div>
             </div>
         </div>
@@ -70,45 +72,45 @@
         },
         data() {
             return {
-                newsDetail:[],
-                core: [
-                    {
-                        name: "张麟（法人）",
-                        detail: "之前就职于苏州工业园区大型企业10多年，管理企业大型项目，对现代化企业管理流程熟悉。"
-                    },
-                    {
-                        name: "黄羽（总经理）",
-                        detail: "之前就职于苏州工业园区大型企业10多年，管理企业大型项目，对现代化企业管理流程熟悉。"
-                    },
-                ],
-                review: [
-                    {
-                        title: "完整的逻辑架构",
-                        desc: "打造符合投资人口味的完整计划书逻辑框架和商业模式，提出优化建议。"
-                    },
-                    {
-                        title: "清晰的商业模式",
-                        desc: "打造符合投资人口味的完整计划书逻辑框架和商业模式，提出优化建议。"
-                    },
-                ],
-                mayProject: [
-                    {
-                        title: "预防近视阻止近视发生发展的可穿戴品，健康医疗领域，需要融资项目，金额为100万元",
-                        time: "2018-01-01"
-                    },
-                    {
-                        title: "预防近视阻止近视发生发展的可穿戴品，健康医疗领域，需要融资项目，金额为100万元",
-                        time: "2018-01-01"
-                    },
-                    {
-                        title: "预防近视阻止近视发生发展的可穿戴品，健康医疗领域，需要融资项目，金额为100万元",
-                        time: "2018-01-01"
-                    },
-                    {
-                        title: "预防近视阻止近视发生发展的可穿戴品，健康医疗领域，需要融资项目，金额为100万元",
-                        time: "2018-01-01"
-                    },
-                ],
+                // newsDetail:[],
+                // core: [
+                //     {
+                //         name: "张麟（法人）",
+                //         detail: "之前就职于苏州工业园区大型企业10多年，管理企业大型项目，对现代化企业管理流程熟悉。"
+                //     },
+                //     {
+                //         name: "黄羽（总经理）",
+                //         detail: "之前就职于苏州工业园区大型企业10多年，管理企业大型项目，对现代化企业管理流程熟悉。"
+                //     },
+                // ],
+                // review: [
+                //     {
+                //         title: "完整的逻辑架构",
+                //         desc: "打造符合投资人口味的完整计划书逻辑框架和商业模式，提出优化建议。"
+                //     },
+                //     {
+                //         title: "清晰的商业模式",
+                //         desc: "打造符合投资人口味的完整计划书逻辑框架和商业模式，提出优化建议。"
+                //     },
+                // ],
+                // mayProject: [
+                //     {
+                //         title: "预防近视阻止近视发生发展的可穿戴品，健康医疗领域，需要融资项目，金额为100万元",
+                //         time: "2018-01-01"
+                //     },
+                //     {
+                //         title: "预防近视阻止近视发生发展的可穿戴品，健康医疗领域，需要融资项目，金额为100万元",
+                //         time: "2018-01-01"
+                //     },
+                //     {
+                //         title: "预防近视阻止近视发生发展的可穿戴品，健康医疗领域，需要融资项目，金额为100万元",
+                //         time: "2018-01-01"
+                //     },
+                //     {
+                //         title: "预防近视阻止近视发生发展的可穿戴品，健康医疗领域，需要融资项目，金额为100万元",
+                //         time: "2018-01-01"
+                //     },
+                // ],
                 openSimple: false,
                 // widthDialog:"3rem"
             }
@@ -120,17 +122,17 @@
             closeApply() {
                 this.openSimple = false;
             },
-            getNewsDetail(){
-                let id = this.$route.query.id
-                this.$axios.get(`/jsp/wap/trNews/ctrl/jsonNewsDetail.jsp?id=${id}`).then(res=>{
-                    console.log("新闻详情",res)
-                    this.newsDetail = res.data
-                })
-            }
+            // getNewsDetail(){
+            //     let id = this.$route.query.id
+            //     this.$axios.get(`/jsp/wap/trNews/ctrl/jsonNewsDetail.jsp?id=${id}`).then(res=>{
+            //         console.log("新闻详情",res)
+            //         this.newsDetail = res.data
+            //     })
+            // }
         },
-        created(){
-            this.getNewsDetail()
-        }
+        // created(){
+        //     this.getNewsDetail()
+        // }
     }
 </script>
 
@@ -235,14 +237,5 @@
         color: #fff;
         text-align: center;
         margin-top: .4rem
-    }
-
-        /deep/ {
-        .contentText {
-            img {
-                max-width: 6rem !important;
-            }
-        }
-
     }
 </style>

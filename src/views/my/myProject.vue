@@ -15,9 +15,48 @@
                             <div class="clearfix">
                                 <div class="peojectTitle fll">{{item.title}}</div>
                                 <span class="flr cancleBtn" v-show="item.style ==1">{{item.status}}</span>
-                                <span class="flr cancleBtn" style="color:red" v-show="item.style ==2">{{item.status}}</span>
-                                <span class="flr cancleBtn" style="color:green" v-show="item.style ==3">{{item.status}}</span>
-                                <span class="flr cancleBtn" style="color:blue" v-show="item.style ==4">{{item.status}}</span>
+                                <span class="flr cancleBtn" style="color:rgb( 255, 132, 158 )" v-show="item.style ==2">{{item.status}}</span>
+                                <span class="flr cancleBtn" style="color:rgb( 255, 132, 158 )" v-show="item.style ==3">{{item.status}}</span>
+                                <span class="flr cancleBtn" style="color:#409eff" v-show="item.style ==4">{{item.status}}</span>
+                            </div>
+
+                            <div class="textContent">
+                                <div>
+                                    <span>约谈：</span>
+                                    <span class="lookNum">{{item.num}}</span>
+                                </div>
+                                <div class="clearfix">
+                                    <div class="fll startTime">{{item.startTime}}</div>
+                                    <div class="flr">
+                                        <mu-button icon color="Normal" class="delete">
+                                            <i class="iconfont icon-edit-1-copy"></i>
+                                            <mu-icon value="修改" class="mu-icon"></mu-icon>
+                                        </mu-button>
+                                        <mu-button icon color="Normal" class="delete">
+                                            <i class="iconfont icon-shanchu"></i>
+                                            <mu-icon value="删除" class="mu-icon"></mu-icon>
+                                        </mu-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="apply" @click="$router.push('/issueProject')">
+                        <i class="iconfont icon-xiangmu"></i>
+                        <span>添加项目</span>
+                    </div>
+                </div>
+                <div class="demo-text" v-if="active2 === 1">
+                    <div v-for="(item,index) in projectList" :key="index">
+                        <!--  -->
+                        <div class="projectBox">
+                            <div class="clearfix">
+                                <div class="peojectTitle fll">{{item.title}}</div>
+                                <span class="flr cancleBtn" v-show="item.style ==1">{{item.status}}</span>
+                                <span class="flr cancleBtn" style="color:rgb( 255, 132, 158 )" v-show="item.style ==2">{{item.status}}</span>
+                                <span class="flr cancleBtn" style="color:rgb( 255, 132, 158 )" v-show="item.style ==3">{{item.status}}</span>
+                                <span class="flr cancleBtn" style="color:#409eff" v-show="item.style ==4">{{item.status}}</span>
                             </div>
                             <div class="textContent">
                                 <div>
@@ -41,16 +80,48 @@
                         </div>
 
                     </div>
-                    <div class="apply" @click="handleApply">
+                    <div class="apply" @click="$router.push('/issueProject')">
                         <i class="iconfont icon-xiangmu"></i>
                         <span>添加项目</span>
                     </div>
                 </div>
-                <div class="demo-text" v-if="active2 === 1">
-                    111
-                </div>
                 <div class="demo-text" v-if="active2 === 2">
-                    222
+                    <div v-for="(item,index) in projectList" :key="index">
+                        <!--  -->
+                        <div class="projectBox">
+                            <div class="clearfix">
+                                <div class="peojectTitle fll">{{item.title}}</div>
+                                <span class="flr cancleBtn" v-show="item.style ==1">{{item.status}}</span>
+                                <span class="flr cancleBtn" style="color:rgb( 255, 132, 158 )" v-show="item.style ==2">{{item.status}}</span>
+                                <span class="flr cancleBtn" style="color:rgb( 255, 132, 158 )" v-show="item.style ==3">{{item.status}}</span>
+                                <span class="flr cancleBtn" style="color:#409eff" v-show="item.style ==4">{{item.status}}</span>
+                            </div>
+                            <div class="textContent">
+                                <div>
+                                    <span>约谈：</span>
+                                    <span class="lookNum">{{item.num}}</span>
+                                </div>
+                                <div class="clearfix">
+                                    <div class="fll startTime">{{item.startTime}}</div>
+                                    <div class="flr">
+                                        <mu-button icon color="Normal" class="delete">
+                                            <i class="iconfont icon-edit-1-copy"></i>
+                                            <mu-icon value="修改" class="mu-icon"></mu-icon>
+                                        </mu-button>
+                                        <mu-button icon color="Normal" class="delete">
+                                            <i class="iconfont icon-shanchu"></i>
+                                            <mu-icon value="删除" class="mu-icon"></mu-icon>
+                                        </mu-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="apply" @click="$router.push('/issueProject')">
+                        <i class="iconfont icon-xiangmu"></i>
+                        <span>添加项目</span>
+                    </div>
                 </div>
             </mu-container>
         </div>
@@ -66,7 +137,7 @@
         },
         data() {
             return {
-                active2: 1,
+                active2: 0,
                 projectList: [
                     {
                         status: "已发布",
@@ -230,6 +301,7 @@
         }
         span{
             font-size: .2rem;
+            display: block
         }
     }
 </style>

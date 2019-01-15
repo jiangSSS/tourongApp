@@ -38,6 +38,9 @@
                                         {{ item.dataName }}
                                     </van-checkbox>
                                 </van-checkbox-group>
+                                <!-- <label v-model="area" @change="areaItem">
+                                    <button  v-for="(item, index) in regionList" :key="index" :name="item" class="radioItem buttonCheck" :class="{active:item.checked}">{{item.dataName}}</button>    
+                                </label> -->
                                 <!-- <span v-for="(item, index) in regionList" :key="index" class="checkBtn" :class="(item.like == 0 ? ' nolike' : ' like')" @click="checkItem2(index)">{{item.dataName}}</span> -->
                                 <!-- <label v-for="(item, index) in regionList" :key="index" class="checkBtn" :class="{active:isActive2 == true}" @click="checkItem2(index)"><input type="checkbox">{{item.dataName}}</label> -->
                             </div>
@@ -61,11 +64,13 @@
                 <div class="text">
                     <div class="index">
                         <div class="header clearfix">
-                            <div class="flr"  @click="$router.push('/issueProject')"><button class="sendMoney">发布项目</button></div>                            
+                            <div class="flr" @click="$router.push('/issueProject')">
+                                <button class="sendMoney">发布项目</button>
+                            </div>
                             <div class="search fll">
                                 <input type="text" placeholder="请输入内容" class="input_search" />
                                 <i class="iconfont icon-sousuo1"></i>
-                            </div>                            
+                            </div>
                         </div>
                         <div class="detail">
                             <div class="chooseTitle">
@@ -179,8 +184,8 @@
                 this.$axios.get('/jsp/wap/trProject/ctrl/jsonProjectPage.jsp', {
                     params: {
                         financingWays: this.financingWays,
-                        financingMoneys: this.financingMoneys, 
-                        industrys: this.industrys, 
+                        financingMoneys: this.financingMoneys,
+                        industrys: this.industrys,
                         regions: this.regions,
                         pageNumber: this.pn
                     }
@@ -252,7 +257,15 @@
                     regionList.push(item.dataValue)
                 })
                 this.regions = regionList.join(',')
+                this.getProjectList(this.financingMoneys, this.financingWays, this.industrys, this.regions)
             },
+            // areaItem(val) {
+            //     let regionList = []
+            //     val.forEach(item => {
+            //         regionList.push(item.dataValue)
+            //     })
+            //     this.regions = regionList.join(',')
+            // },
             // likeAll() {
             //     this.label.forEach(item => {
             //     item.like = 1;
@@ -311,10 +324,16 @@
 </script>
 <style scoped lang="scss">
     .detail {
-        padding-bottom: 1.2rem;
-        // background: #fafafa;
+        padding-bottom: 1.2rem; // background: #fafafa;
     }
-
+    .buttonCheck{
+        outline: none;
+        border: 0
+    }
+    .like {
+        background: #005982;
+        color: #fff
+    }
     .header {
         background: #fff !important;
     }

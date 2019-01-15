@@ -175,7 +175,7 @@
             // 注册
             handleReg() {
                 if (this.registerData.code != '') {
-                    this.$axios.get('/jsp/wap/login/do/doRegister.jsp', { params: { code: this.registerData.code, mobile: this.registerData.mobile, pwd: this.registerData.pwd, email: this.registerData.email } }).then(res => {
+                    this.$axios.get('/jsp/wap/login/do/doRegister.jsp', { params: { code: this.registerData.code, mobile: this.registerData.mobile, pwd: this.registerData.pwd, email_: this.registerData.email } }).then(res => {
                         let instance = Toast('注册成功');
                                 setTimeout(() => {
                                     instance.close();

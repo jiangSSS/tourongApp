@@ -33,7 +33,7 @@
                             </div>
                             <div v-infinite-scroll="loadMore" infinite-scroll-disabled="loading">
                                 <div class="applyBox" v-for="(item,index) in pageList" :key="index">
-                                    <router-link :to="{path:'/activityDetail',query:{id:item.id}}">
+                                    <router-link :to="{path:'/activity/activityDetail',query:{id:item.id}}">
                                         <div class="imgWarp">
                                             <div class="imgBox">
                                                 <img :src="$url + item.imgPath" alt="" class="imgPath">
@@ -71,9 +71,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="scrollTop" @click="toTop">
-                                    <img src="../../../static/app/img/backTop.png" alt="">
-                                </div>
+                                <ToTop></ToTop>
+                                <!-- <vueToTop></vueToTop> -->
                                 <div>
                                     <div class="noData" v-if="this.totalCount > this.pageList.length">加载中...</div>
                                     <div class="noData" v-else>--- 没有更多数据了 ---</div>
@@ -91,13 +90,12 @@
 <script>
     import Header from "@/components/Header.vue"
     import Footer from "@/components/Bottom.vue"
-    // import Choose from "@/views/activity/choose.vue"
-
+    import ToTop from "@/components/toTop.vue"
     export default {
         components: {
             Header,
             Footer,
-            // Choose
+            ToTop
         },
         data() {
             return {
@@ -119,12 +117,6 @@
                 totalCount: [],
                 categoryList: [],
                 statusList: [],
-
-                scrollTop: 0,
-                time: 0,
-                dParams: 20,
-                scrollState: 0
-
             }
         },
         methods: {
@@ -216,7 +208,6 @@
                     });
                     this.categoryList[index].checked = true
                 }
-
             },
             // 确定筛选
             handleSure() {
@@ -227,44 +218,8 @@
             submit() {
                 alert("提交")
             },
-            toTop() {
-                console.log("11111")
-                document.body.scrollTop = 0
-                document.documentElement.scrollTop = 0
-            }
-            // toTop(e) {
-            //     if (!!this.scrollState) {
-            //         return;
-            //     }
-            //     this.scrollState = 1;
-            //     e.preventDefault();
-            //     let distance = document.documentElement.scrollTop || document.body.scrollTop;
-            //     let _this = this;
-            //     this.time = setInterval(function () { _this.gotoTop(_this.scrollTop - _this.dParams) }, 10);
-            // },
-            // gotoTop(distance) {
-            //     this.dParams += 20;
-            //     distance = distance > 0 ? distance : 0;
-            //     document.documentElement.scrollTop = document.body.scrollTop = window.pageYOffset = distance;
-            //     if (this.scrollTop < 10) {
-            //         clearInterval(this.time);
-            //         this.dParams = 20;
-            //         this.scrollState = 0;
-            //     }
-            // },
-            // getScrollTop() {
-            //     this.scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-            // }
+           
         },
-        // computed: {
-        //     showTop: function() {
-        //         let value = this.scrollTop > 200 ? true : false;
-        //         return value;
-        //     },
-        // },
-        // mounted() {
-        //     window.addEventListener('scroll', this.getScrollTop);
-        // },
         created() {
             this.getActivityList(this.statuss, this.categorys)
             this.getTypeData()
@@ -518,10 +473,5 @@
         border-bottom: 1px dashed #fafafa;
     }
 
-    .scrollTop {
-        position: fixed;
-        right: .8rem;
-        bottom: 1.5rem;
-        cursor: pointer;
-    }
+    
 </style>

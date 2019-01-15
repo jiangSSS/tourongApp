@@ -29,7 +29,8 @@ export default new Router({
       name: 'projectA',
       component: () => import("@/views/projectA/index.vue"),
       meta:{
-        title:"融资项目"
+        title:"融资项目",
+        keepAlive:true
       }
     },
     {
@@ -37,7 +38,8 @@ export default new Router({
       name: 'news',
       component: () => import("@/views/news/index.vue"),
       meta:{
-        title:"资讯列表"
+        title:"资讯列表",
+        keepAlive:true
       }
     },
     {
@@ -85,7 +87,8 @@ export default new Router({
       name: 'money',
       component: () => import("@/views/money/index.vue"),
       meta:{
-        title:"投资信息列表"
+        title:"投资信息列表",
+        keepAlive:true
       },
     },
     {
@@ -133,11 +136,12 @@ export default new Router({
       name: 'activity',
       component: () => import("@/views/activity/index.vue"),
       meta:{
-        title:"会议活动"
+        title:"会议活动",
+        keepAlive:true
       }
     },
     {
-      path: '/activityDetail',
+      path: '/activity/activityDetail',
       name: 'activityDetail',
       component: () => import("@/views/activity/activityDetail.vue"),
       meta:{
@@ -148,6 +152,14 @@ export default new Router({
       path: '/newsDetail',
       name: 'newsDetail',
       component: () => import("@/views/news/newsDetail.vue"),
+      meta:{
+        title:"资讯详情"
+      }
+    },
+    {
+      path: '/newsDetail1',
+      name: 'newsDetail1',
+      component: () => import("@/views/news/newsDetail1.vue"),
       meta:{
         title:"资讯详情"
       }
@@ -246,6 +258,14 @@ export default new Router({
       component: () => import("@/views/my/service.vue"),
       meta: {
         title: "在线客服"
+      }
+    },  
+    {
+      path: "/userInfo",
+      name: "userInfo",
+      component: () => import("@/views/my/userInfo.vue"),
+      meta: {
+        title: "会员信息"
       }
     },  
   ]

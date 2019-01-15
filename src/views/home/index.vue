@@ -7,13 +7,12 @@
             <div class="logoBox">
                 <img src="../../../static/app/img/home/logo.jpg" class="logo">
             </div>
-            <div class="rightBox">
+            <div class="rightBox" @click="tokefu">
                 <img src="../../../static/app/img/home/header_right.jpg" class="header_right">
             </div>
         </div>
 
         <div class="detail">
-            <!-- <img src="../../../static/app/img/swiper.jpg" class="swiper" alt=""> -->
             <div class="swiper">
                 <swiper :options="swiperOption">
                     <swiper-slide v-for="(item,index) in banner" :key="index">
@@ -38,7 +37,7 @@
                         <div class="title">投资</div>
                     </div>
                 </router-link>
-                <router-link to="/login">
+                <router-link to="/projectA">
                     <div>
                         <div>
                             <img src="../../../static/app/img/home/0b.jpg" alt="">
@@ -62,7 +61,6 @@
                         <div class="title">资讯</div>
                     </div>
                 </router-link>
-                <!-- <router-link to="/activity"></router-link> -->
             </div>
             <div class="clearfix">
                 <img src="../../../static/app/img/home/homeContent1.jpg" class="homeContent1 fll">
@@ -139,53 +137,30 @@
                     <i class="iconfont icon-xiangyou"></i>
                 </span>
             </div>
-            <div class="messageList" v-for="item in messageList" :key="item.index">
-                <div class="clearfix rows">
-                    <img src="../../../static/app/img/my/dian.jpg" class="dian fll">
-                    <div class="nums clearfix">
-                        <span class="fll messageTitle">{{item.title}}</span>
-                        <span class="flr messageTime">{{item.time}}</span>
-                    </div>
-                </div>
-            </div>
-            <!-- 死的 -->
-            <div class="clearfix rows">
-                <div class="flr">
-                    <div class="nums">
-                        <div class="fll">
-                            <img src="../../../static/app/img/my/dian.jpg" class="dian fll">
-                            <div class="aaaa titleImg">我国快递业务量连续4年稳居世界第一</div>
+            <div v-for="(item,index) in pageList.slice(0,4)" :key="index">
+                <router-link :to="{path:'/newsDetail',query:{id:item.id}}">
+                    <div class="clearfix rows">
+                        <div class="nums flr">
+                            <div class="clearfix" style="margin-top:.2rem">
+                                <img src="../../../static/app/img/my/dian.jpg" class="dian fll">
+                                <span class="fll messageTitle">{{item.title}}</span>
+                                <span class="flr messageTime">{{item.addTimeStr.slice(0,10)}}</span>
+                            </div>
+                            <div class="newsDesc">
+                                {{item.brief}}
+                            </div>
                         </div>
-                        <div>
-                            <span class=" titleImg timedata">2018-10-10</span>
+                        <div class="newsImgBox fll">
+                            <img :src="$url + item.imgPath" class="newsImg">
                         </div>
                     </div>
-                </div>
-                <div class="newsImgBox fll">
-                    <img src="../../../static/app/img/home/information1.jpg" class="newsImg">
-                </div>
-            </div>
-            <!-- 死的 -->
-            <div>
-                <div class="clearfix rows">
-                    <img src="../../../static/app/img/my/dian.jpg" class="dian fll">
-                    <div class="nums clearfix">
-                        <span class="fll messageTitle">我国快递业务量连续4年稳居世界第一</span>
-                        <span class="flr messageTime">2018-10-10</span>
-                    </div>
-                </div>
-                <div class="rows threes">
-                        <img src="../../../static/app/img/home/information1.jpg" class="newsImg">
-                        <img src="../../../static/app/img/home/information1.jpg" class="newsImg">
-                        <img src="../../../static/app/img/home/information1.jpg" class="newsImg">
-                </div>
+                </router-link>
             </div>
             <p class="noData">--- 没有数据了 ---</p>
         </div>
         <Footer class="footer"></Footer>
     </div>
 </template>
-
 <script>
     import Footer from "@/components/Bottom.vue";
     import "swiper/dist/css/swiper.css";
@@ -226,73 +201,61 @@
                     //默认为false，普通模式：slide滑动时只滑动一格，并自动贴合wrapper，设置为true则变为free模式，slide会根据惯性滑动可能不止一格且不会贴合。
                     // freeMode:true
                 },
+                pageList: [],
                 messageList: [
                     {
-                        title: "中央环保督察'回头看'将严查'一刀切'中央环保督察'回头看'将严查'一刀切'中央环保督察'回头看'将严查'一刀切'中央环保督察'回头看'将严查'一刀切'中央环保督察'回头看'将严查'一刀切'",
+                        title:
+                            "开拓绿色能源自主创新之路开拓绿色能源自主创新之路开拓绿色能源自主创新之路开拓绿色能源自主创新之路开拓绿色能源自主创新之路开拓绿色能源自主创新之路'",
                         time: "2019-11-11"
                     },
                     {
-                        title: "中央环保督察'回头看'将严查'一刀切'",
+                        title: "开拓绿色能源自主创新之路开拓绿色能源自主创新之路'",
                         time: "2018-11-11"
                     },
                     {
-                        title: "中央环保督察'回头看'将严查'一刀切'",
+                        title: "开拓绿色能源自主创新之路开拓绿色能源自主创新之路'",
                         time: "2017-11-11"
-                    },
+                    }
                 ]
             };
         },
         methods: {
             getSwiper() {
                 this.$axios.get(`/jsp/wap/index/ctrl/jsonIndex.jsp`).then(res => {
-                    console.log("轮播图", res)
-                    this.banner = res.data.banner
-                    this.capitalList = res.data.capitalList
-                    this.projectList = res.data.projectList
-                })
-            }
+                    console.log("轮播图", res);
+                    this.banner = res.data.banner;
+                    this.capitalList = res.data.capitalList;
+                    this.projectList = res.data.projectList;
+                });
+            },
+            tokefu() {
+                window.open('https://tb.53kf.com/code/app/10193554/1', '_blank')
+            },
+            getNewsList() {
+                this.$axios.get(`/jsp/wap/trNews/ctrl/jsonNewsPage.jsp`).then(res => {
+                    console.log("新闻列表", res);
+                    if (res.success == "true") {
+                        this.pageList = res.data.pageList;
+                    }
+                });
+            },
         },
         created() {
-            this.getSwiper()
+            this.getNewsList()
+            this.getSwiper();
         }
     };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
     // 头部
-    .all {
-        position: relative;
-        width: 100%;
-    }
-
-    .newsImg {
-        width: 2rem
-    }
-
-    .aaaa {
-        width: 4.5rem;
-        color: #333 !important
-    }
-
-    .titleImg {
-        font-size: .24rem;
-        color: #ccc
-    }
-
-    .timedata {
-        margin-left: .4rem
-    }
-    .threes{
-        display: flex;
-        justify-content: space-between
-    }
-    .threes img{
-        width: 2rem;
-        height: 1.6rem;
-    }
-
-
+    .all {position: relative;width: 100%;}
+    .newsImg {width: 2rem;}
+    .aaaa { width: 4.5rem;color: #333 !important;}
+    .titleImg {font-size: 0.24rem;color: #ccc;}
+    .timedata { margin-left: 0.4rem;}
+    .threes {display: flex;justify-content: space-between;}
+    .threes img {width: 2rem; height: 1.6rem;}
     .header {
         display: flex;
         justify-content: space-between;
@@ -305,7 +268,7 @@
         }
         .logoBox {
             line-height: 2.5;
-            margin-top: .1rem
+            margin-top: 0.1rem;
         }
         .rightBox {
             line-height: 2;
@@ -314,7 +277,7 @@
             width: 0.45rem;
             text-align: center;
             margin-top: 0.1rem;
-            margin-right: .2rem
+            margin-right: 0.2rem;   
         }
         .search {
             font-size: 0.3rem;
@@ -322,21 +285,17 @@
             padding-top: -0.1rem;
         }
         .searchBox {
-            margin-left: .1rem;
+            margin-left: 0.1rem;
             text-align: center;
             .iconfont {
-                font-size: .5rem;
+                font-size: 0.5rem;
             }
         }
     }
-
-    .detail {
-        padding-bottom: 1.4rem;
-    }
-
+    .detail {padding-bottom: 1.4rem;}
     .noData {
         text-align: center;
-        color: #999
+        color: #999;
     } //  轮播图
     .swiper {
         img {
@@ -352,18 +311,18 @@
     .tab {
         display: flex;
         justify-content: space-around;
-        padding: .3rem .4rem;
+        padding: 0.3rem 0.4rem;
         text-align: center;
 
         img {
-            width: .7rem;
+            width: 0.7rem;
         }
         a {
             color: rgba(0, 0, 0, 0.8);
         }
         .title {
-            font-size: .25rem; // display: inline-block;
-            margin-top: -.05rem
+            font-size: 0.25rem; // display: inline-block;
+            margin-top: -0.05rem;
         }
     } // content
     .homeContent1 {
@@ -384,16 +343,16 @@
     }
 
     .row2 {
-        margin-bottom: .2rem;
+        margin-bottom: 0.2rem;
         padding: 0 !important;
         span:nth-child(1) {
             padding-right: 0.1rem;
-            font-size: .28rem
+            font-size: 0.28rem;
         }
         span:nth-child(2) {
             color: #005982;
             font-weight: 700;
-            font-size: .28rem
+            font-size: 0.28rem;
         }
     }
 
@@ -421,7 +380,7 @@
     .wellProject {
         padding: 0.2rem 0.3rem;
         .wellTitle {
-            font-size: .3rem;
+            font-size: 0.3rem;
             font-family: "Microsoft YaHei";
             color: rgb(62, 58, 57);
             font-weight: bold;
@@ -438,7 +397,7 @@
             width: 100%;
         }
         .wellContent {
-            font-size: .24rem;
+            font-size: 0.24rem;
             font-family: "Microsoft YaHei";
             color: rgb(137, 137, 137);
             line-height: 1.429;
@@ -470,12 +429,12 @@
             vertical-align: middle;
         }
         .rightTitle {
-            font-size: .3rem;
+            font-size: 0.3rem;
             font-family: "Microsoft YaHei";
             color: rgb(62, 58, 57);
             font-weight: bold;
-            padding-top: .2rem;
-            margin-bottom: .15rem;
+            padding-top: 0.2rem;
+            margin-bottom: 0.15rem;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
@@ -484,57 +443,90 @@
         }
         .moneyNum {
             color: #005982;
-            font-size: .26rem !important;
-            font-weight: bold
+            font-size: 0.26rem !important;
+            font-weight: bold;
         }
     }
 
     .rightList div {
         clear: both;
-        line-height: 2
+        line-height: 2;
     }
 
     .rightList span:nth-child(1) {
         font-family: "PingFang";
         color: #999; // display: inline-block;
-        font-size: .24rem;
+        font-size: 0.24rem;
         float: left;
     }
 
     .rightList span:nth-child(2) {
         float: left;
-        font-size: .24rem;
-        color: #333; // display: inline-block;    
+        font-size: 0.24rem;
+        color: #333; // display: inline-block;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
         width: 2.2rem;
     }
+    .dian {
+        margin: 0.15rem;
+    }
+
+    .moneyBoxa {
+        background: #fafafa;
+    }
 
     .rows {
-        padding: 0 .3rem;
+        padding: 0.15rem 0.3rem;
+        border-bottom: .2rem solid #fafafa;
         .messageTitle {
-
-            font-size: .24rem;
+            font-size: 0.26rem;
             font-family: "Microsoft YaHei";
-            color: rgb( 51, 51, 51);
+            color: rgb(51, 51, 51);
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
-            width: 5rem
+            width: 2.4rem;
+            line-height: 2
         }
         .messageTime {
-            font-size: .2rem;
+            font-size: 0.22rem;
             font-family: "Microsoft YaHei";
-            color: rgb( 137, 137, 137);
+            color: rgb(137, 137, 137);
+            line-height: 2
         }
     }
 
     .dian {
-        margin: .15rem
+        margin: 0.15rem;
     }
 
-    .moneyBoxa {
-        background: #fafafa
+    .newsImgBox {
+        // display: flex;
+        // justify-content: space-between;
+        padding-top: 0.15rem;
+        .newsImg {
+            width: 2.2rem;
+            height: 2rem;
+        }
     }
+
+    .nums {
+        width: 4.5rem
+    }
+
+    .newsDesc {
+        color: #666;
+        float: right;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        width: 4.2rem;
+        font-size: .24rem;
+        margin-top: .1rem;
+    }
+
 </style>

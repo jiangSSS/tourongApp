@@ -1,78 +1,4 @@
 <template>
-
-    <!-- <div class="all">
-        <Header></Header>
-        <div class="detail">
-            <mu-container class="subTabs">
-                <mu-tabs :value.sync="active1" class="subTab" inverse color="#005982" indicator-color="#005982" full-width>
-                    <mu-tab>系统消息</mu-tab>
-                    <mu-tab>在线客服</mu-tab>
-                    <mu-tab>项目进展</mu-tab>
-                    <mu-tab>资金动态</mu-tab>
-                </mu-tabs>
-                <div v-if="active1 === 0">
-                    <div v-for="(item,index) in messageList" :key="index" class="messageBox">
-                        <router-link to="">
-                            <div class="messageTitle">{{item.title}}</div>
-                            <div class="messageDetail">{{item.detail}}</div>
-                            <div class="messageTime">{{item.time}}</div>
-                        </router-link>
-                    </div>
-                </div>
-            </mu-container>
-            <van-tabs>
-                <van-tab v-for="(item,index) in news" :title="item.title" :key="index">
-
-                </van-tab>
-            </van-tabs>
-            <van-tabs v-model="active" swipeable line-color="#005982">
-                <van-tab title="活动会议" class="title">
-                    1
-                </van-tab>
-                <van-tab title="前端科技" class="title">
-                    <div class="messageList">
-                        <div v-infinite-scroll="loadMore" infinite-scroll-disabled="loading">
-                            <div class="" v-for="(item,index) in pageList" :key="index">
-                                <router-link :to="{path:'/newsDetail',query:{id:item.id}}">
-                                    <div class="clearfix rows">
-                                        <div class="flr">
-                                            <div class="nums clearfix">
-                                                <img src="../../../static/app/img/my/dian.jpg" class="dian fll">
-                                                <span class="fll messageTitle">{{item.title}}</span>
-                                                <span class="flr messageTime">{{item.addTimeStr.slice(0,10)}}</span>
-                                            </div>
-                                        </div>
-                                        <div class="newsImgBox fll">
-                                            <img :src="$url + item.imgPath" class="newsImg">
-                                        </div>
-                                    </div>
-                                </router-link>
-                            </div>
-                        </div>
-                    </div>
-                </van-tab>
-                <van-tab title="政策动态">
-                    3
-                </van-tab>
-                <van-tab title="行业">
-
-                </van-tab>
-                <van-tab title="项目">
-
-                </van-tab>
-                <van-tab title="机构">
-
-                </van-tab>
-                <van-tab title="活动推荐">
-
-                </van-tab>
-                <van-tab title="动态服务">
-
-                </van-tab>
-            </van-tabs>
-        </div>
-        <Footer class="footer"></Footer>
-    </div> -->
     <div class="all">
         <Header></Header>
         <div class="detail">
@@ -85,13 +11,17 @@
                         <div class="" v-for="(item,index) in pageList" :key="index">
                             <router-link :to="{path:'/newsDetail',query:{id:item.id}}">
                                 <div class="clearfix rows">
-                                    <div class="flr">
-                                        <div class="nums clearfix">
-                                            <img src="../../../static/app/img/my/dian.jpg" class="dian fll">
-                                            <span class="fll messageTitle">{{item.title}}</span>
-                                            <span class="flr messageTime">{{item.addTimeStr.slice(0,10)}}</span>
+                                 
+                                        <div class="nums clearfix flr">
+                                            <div class="clearfix" style="margin-top:.2rem">
+                                                <img src="../../../static/app/img/my/dian.jpg" class="dian fll">
+                                                <span class="fll messageTitle">{{item.title}}</span>
+                                                <span class="flr messageTime">{{item.addTimeStr.slice(0,10)}}</span>
+                                            </div>
+                                            <div class="newsDesc">
+                                                {{item.brief}}
+                                            </div>
                                         </div>
-                                    </div>
                                     <div class="newsImgBox fll">
                                         <img :src="$url + item.imgPath" class="newsImg">
                                     </div>
@@ -248,6 +178,22 @@
         // background: #fff
         padding: 0;
     }
+    .nums{
+        width: 4.5rem
+    }
+
+    .newsDesc {
+        color: #666;
+        float: right;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        width: 4.2rem;
+        font-size: .2rem;
+        margin-top: .1rem;
+    }
 
     .subTab {
         font-size: 0.5rem !important;
@@ -256,8 +202,7 @@
         line-height: 2.727;
         text-align: center;
         background: #fff;
-    } 
-    // /deep/.van-tabs__line {
+    } // /deep/.van-tabs__line {
     //     background: #005982 !important;
     //     bottom: .2rem !important;
     // }
@@ -280,12 +225,14 @@
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
-            width: 2.8rem;
+            width: 2.4rem;
+            line-height: 2
         }
         .messageTime {
             font-size: 0.2rem;
             font-family: "Microsoft YaHei";
             color: rgb(137, 137, 137);
+            line-height: 2
         }
     }
 

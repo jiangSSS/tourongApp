@@ -1,143 +1,143 @@
 <template>
     <div>
-         <div class="header">
-            <mt-header title="个人中心" class="header-title">      
+        <div class="header">
+            <mt-header title="个人中心" class="header-title">
             </mt-header>
         </div>
         <div class="all">
             <div class="detail">
                 <div class="bg">
-                    <img src="../../../static/app/img/bg-header.jpg" class="sendHeader" alt="">     
+                    <img src="../../../static/app/img/bg-header.jpg" class="sendHeader" alt="">
                     <div class="userBox">
-                            <div class="clearfix usera">
-                                <div class="fll userAvatar">
-                                    <div class="avatarBox">
-                                        <img src="../../../static/app/img/my/avatar.jpg" class="avatar">
-                                        <span class="editUser">
-                                            <img src="../../../static/app/img/my/edit.jpg" class="edit">
-                                        </span>
-                                    </div>
-                                    <div class="userName">姓名</div>
+                        <div class="clearfix usera">
+                            <div class="fll userAvatar">
+                                <div class="avatarBox">
+                                    <img :src="$url +  userInfo.headImgPath" v-if="userInfo.headImgPath != ''" class="avatar">
+                                    <img src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=188149577,2949073731&fm=26&gp=0.jpg" v-else class="avatar">
+                                    <span class="editUser" @click="$router.push('/userInfo')">
+                                        <img src="../../../static/app/img/my/edit.jpg" class="edit">
+                                    </span>
                                 </div>
-                                <div class="fll userInfo">
-                                    <div>
-                                        <span>已认证:</span>
-                                        <span>投资人</span>
-                                    </div>
-                                    <div>{{userInfo.mobile}}</div>
-                                    <div>北京开拓明天有限公司</div>
-                                </div>
-                                <div class="flr messageBox">
-                                    <i class="iconfont icon-xiaoxi message"></i>
-                                    <span class="newNum">77</span>
-                                </div>
+                                <div class="userName">{{userInfo.name}}</div>
                             </div>
-                                <div class="weekLsit">
-                                    <router-link to="/vip" class="vip">VIP会员特权</router-link>
-                                    <router-link to="/weeklist" class="beforeWeek">2018年第2期周报</router-link>
+                            <div class="fll userInfo">
+                                <div>
+                                    <span>已认证:</span>
+                                    <span v-if="userInfo.authenticationName != ''">{{userInfo.authenticationName}}</span>
+                                    <span v-else>暂未认证</span>
                                 </div>
-                           
-        
+                                <div>{{userInfo.mobile}}</div>
+                                <div>{{userInfo.company}}</div>
+                            </div>
+                            <div class="flr messageBox">
+                                <i class="iconfont icon-xiaoxi message"></i>
+                                <span class="newNum">77</span>
+                            </div>
                         </div>
+                        <div class="weekLsit">
+                            <router-link to="/vip" class="vip">VIP会员特权</router-link>
+                            <router-link to="/weeklist" class="beforeWeek">2018年第2期周报</router-link>
+                        </div>
+                    </div>
                 </div>
-                
-
-                <router-link to="">
-                    <div class="myDetail clearfix">
-                        <img src="../../../static/app/img/my/a1.jpg" class="icon" alt="">
-                        <div class="fll">
-                            <span class="myName">及时快报</span>
-                            <i class="iconfont icon-xiangyou flr"></i>
+                <div>
+                    <router-link to="">
+                        <div class="myDetail clearfix">
+                            <img src="../../../static/app/img/my/a1.jpg" class="icon" alt="">
+                            <div class="fll">
+                                <span class="myName">及时快报</span>
+                                <i class="iconfont icon-xiangyou flr"></i>
+                            </div>
                         </div>
-                    </div>
-                </router-link>
-                <router-link to="/center">
-                    <div class="myDetail clearfix">
-                        <img src="../../../static/app/img/my/a2.jpg" class="icon" alt="">
-                        <div class="nums fll">
-                             <span class="myName">会员权益中心</span>
-                            <i class="iconfont icon-xiangyou flr"></i>
-                        </div>  
-                    </div>
-                </router-link>
-                <router-link to="/member">
-                    <div class="myDetail clearfix">
-                        <img src="../../../static/app/img/my/a3.jpg" class="icon" alt="">
-                        <div class="fll">
-                            <span class="myName">会员认证</span>
-                            <i class="iconfont icon-xiangyou flr"></i>
-                        </div>                     
-                    </div>
-                </router-link>
-                <router-link to="/myFocus">
-                    <div class="myDetail clearfix">
-                        <img src="../../../static/app/img/my/a4.jpg" class="icon" alt="">
-                        <div class="fll">
-                             <span class="myName">我的关注</span>
-                            <i class="iconfont icon-xiangyou flr"></i>
-                        </div>    
-                    </div>
-                </router-link>
-                <router-link to="/myProject">
-                    <div class="myDetail clearfix">
-                        <img src="../../../static/app/img/my/a5.jpg" class="icon" alt="">
-                        <div class="fll">
-                             <span class="myName">我的项目</span>
-                            <i class="iconfont icon-xiangyou flr"></i>
-                        </div> 
-                    </div>
-                </router-link>
-                <router-link to="">
-                    <div class="myDetail clearfix">
-                        <img src="../../../static/app/img/my/a6.jpg" class="icon" alt="">
-                        <div class="fll">
-                             <span class="myName">我的资金</span>
-                            <i class="iconfont icon-xiangyou flr"></i>
-                        </div> 
-                    </div>
-                </router-link>
-                <router-link to="/myActivity">
-                    <div class="myDetail clearfix">
-                        <img src="../../../static/app/img/my/a7.jpg" class="icon" alt="">
-                        <div class="fll">
-                            <span class="myName">我的活动</span>
-                            <i class="iconfont icon-xiangyou flr"></i>
+                    </router-link>
+                    <router-link to="/center">
+                        <div class="myDetail clearfix">
+                            <img src="../../../static/app/img/my/a2.jpg" class="icon" alt="">
+                            <div class="nums fll">
+                                <span class="myName">会员权益中心</span>
+                                <i class="iconfont icon-xiangyou flr"></i>
+                            </div>
                         </div>
-                    </div>
-                </router-link>
-                <router-link to="/setting">
-                    <div class="myDetail clearfix">
-                        <img src="../../../static/app/img/my/a8.jpg" class="icon" alt="">
-                        <div class="fll">
-                            <span class="myName">系统设置</span>
-                            <i class="iconfont icon-xiangyou flr"></i>
+                    </router-link>
+                    <router-link to="/member">
+                        <div class="myDetail clearfix">
+                            <img src="../../../static/app/img/my/a3.jpg" class="icon" alt="">
+                            <div class="fll">
+                                <span class="myName">会员认证</span>
+                                <i class="iconfont icon-xiangyou flr"></i>
+                            </div>
                         </div>
-                    </div>
-                </router-link>
-                <router-link to="/demand">
-                    <div class="myDetail clearfix">
-                        <img src="../../../static/app/img/my/a9.jpg" class="icon" alt="">
-                        <div class="fll">
-                            <span class="myName">需求填报</span>
-                            <i class="iconfont icon-xiangyou flr"></i>
+                    </router-link>
+                    <router-link to="/myFocus">
+                        <div class="myDetail clearfix">
+                            <img src="../../../static/app/img/my/a4.jpg" class="icon" alt="">
+                            <div class="fll">
+                                <span class="myName">我的关注</span>
+                                <i class="iconfont icon-xiangyou flr"></i>
+                            </div>
                         </div>
-                    </div>
-                </router-link>
-                <router-link to="">
-                    <div class="myDetail clearfix">
-                        <img src="../../../static/app/img/my/a10.jpg" class="icon" alt="">
-                        <div class="fll">
-                            <span class="myName">在线客服</span>
-                            <i class="iconfont icon-xiangyou flr"></i>
+                    </router-link>
+                    <router-link to="/myProject">
+                        <div class="myDetail clearfix">
+                            <img src="../../../static/app/img/my/a5.jpg" class="icon" alt="">
+                            <div class="fll">
+                                <span class="myName">我的项目</span>
+                                <i class="iconfont icon-xiangyou flr"></i>
+                            </div>
                         </div>
-                    </div>
-                </router-link>
+                    </router-link>
+                    <router-link to="/myMoney">
+                        <div class="myDetail clearfix">
+                            <img src="../../../static/app/img/my/a6.jpg" class="icon" alt="">
+                            <div class="fll">
+                                <span class="myName">我的资金</span>
+                                <i class="iconfont icon-xiangyou flr"></i>
+                            </div>
+                        </div>
+                    </router-link>
+                    <router-link to="/myActivity">
+                        <div class="myDetail clearfix">
+                            <img src="../../../static/app/img/my/a7.jpg" class="icon" alt="">
+                            <div class="fll">
+                                <span class="myName">我的活动</span>
+                                <i class="iconfont icon-xiangyou flr"></i>
+                            </div>
+                        </div>
+                    </router-link>
+                    <router-link to="/setting">
+                        <div class="myDetail clearfix">
+                            <img src="../../../static/app/img/my/a8.jpg" class="icon" alt="">
+                            <div class="fll">
+                                <span class="myName">系统设置</span>
+                                <i class="iconfont icon-xiangyou flr"></i>
+                            </div>
+                        </div>
+                    </router-link>
+                    <router-link to="/demand">
+                        <div class="myDetail clearfix">
+                            <img src="../../../static/app/img/my/a9.jpg" class="icon" alt="">
+                            <div class="fll">
+                                <span class="myName">需求填报</span>
+                                <i class="iconfont icon-xiangyou flr"></i>
+                            </div>
+                        </div>
+                    </router-link>
+                    <!-- <router-link to=""> -->
+                        <div @click="tokefu">
+                            <div class="myDetail clearfix">
+                            <img src="../../../static/app/img/my/a10.jpg" class="icon" alt="">
+                            <div class="fll">
+                                <span class="myName">在线客服</span>
+                                <i class="iconfont icon-xiangyou flr"></i>
+                            </div>
+                        </div>
+                        </div>
+                        
+                    <!-- </router-link> -->
+                </div>
                 <div class="logout" @click="loginOut">
                     退出登录
                 </div>
-
-
-
             </div>
         </div>
         <Footer class="footer"></Footer>
@@ -149,7 +149,7 @@
     // import Header from "@/components/Header.vue"
     import Footer from "@/components/Bottom.vue"
     import * as Cookies from 'js-cookie'
-     import { Toast } from 'mint-ui'
+    import { Toast } from 'mint-ui'
     export default {
         components: {
             Footer,
@@ -158,29 +158,33 @@
         },
         data() {
             return {
-                userInfo:[]
+                userInfo: []
             }
         },
-        methods:{
-            getUserData(){
-                this.$axios.get(`/jsp/wap/center/ctrl/jsonUserInfo.jsp`).then(res=>{
-                    console.log("用户信息",res)
+        methods: {
+            getUserData() {
+                this.$axios.get(`/jsp/wap/center/ctrl/jsonUserInfo.jsp`).then(res => {
+                    console.log("用户信息", res)
                     this.userInfo = res.data
                 })
             },
-            loginOut(){
+            loginOut() {
                 Cookies.remove('userKey')
                 this.login = false
                 let instance = Toast('已退出，即将返回登录页  ');
-                        setTimeout(() => {
-                            instance.close();
-                        }, 2000);
-                setTimeout(()=>{
-                    this.$router.push('/login')        
-                },1000)
-            }
+                setTimeout(() => {
+                    instance.close();
+                }, 2000);
+                setTimeout(() => {
+                    this.$router.push('/login')
+                }, 1000)
+            },
+             tokefu(){
+                window.open('https://tb.53kf.com/code/app/10193554/1','_blank')
+            },   
+             
         },
-        created(){
+        created() {
             this.getUserData()
         }
     }
@@ -206,23 +210,25 @@
         left: 0;
         width: 100%;
         font-size: .4rem;
-        z-index: 999
+        z-index: 1000
     }
 
-    .bg{
+    .bg {
         position: relative;
         height: 5.5rem;
         background: #f3f5f7
     }
+
     .userBox {
         background: #fff;
         margin: .3rem;
         border-radius: .2rem;
         position: absolute;
-        top:1rem;
+        top: 1rem;
         width: 92%;
     }
-    .usera{
+
+    .usera {
         border-bottom: 1px solid #f3f5f7
     }
 
@@ -244,7 +250,7 @@
     }
 
     .editUser {
-        background: #fff; 
+        background: #fff;
     }
 
     .userAvatar {
@@ -253,6 +259,7 @@
         vertical-align: middle;
         .avatar {
             width: 1.4rem;
+            height: 1.4rem;
             border-radius: 50%;
             text-align: center;
         }
@@ -281,15 +288,18 @@
         left: 30%;
         top: 26%
     }
-    .message{
+
+    .message {
         font-size: .45rem;
-        
+
     }
-    .messageBox{
+
+    .messageBox {
         margin: .2rem .3rem;
         position: relative;
     }
-    .newNum{
+
+    .newNum {
         background: #e75225;
         display: inline-block;
         border-radius: 100%;
@@ -300,7 +310,8 @@
         line-height: .3rem;
         color: #fff;
         position: absolute;
-        left: .25rem;bottom: .4rem;
+        left: .25rem;
+        bottom: .4rem;
     }
 
     .beforeWeek {
@@ -321,9 +332,9 @@
 
     .myDetail {
         color: #666;
-        padding: .2rem;
+        padding: 0 .2rem;
         background: #fff;
-       
+
         .myName {
             padding-left: .2rem;
             display: inline-block;
@@ -340,11 +351,13 @@
             float: left;
         }
     }
-    .myDetail div{
+
+    .myDetail div {
         display: flex;
         justify-content: space-between;
         width: 94%;
         border-bottom: 1px solid #f3f5f7;
+        padding: .1rem 0;
 
     }
 
