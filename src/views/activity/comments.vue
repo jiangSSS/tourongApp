@@ -32,7 +32,7 @@
               content:this.formData.content
             }
           }).then(res => {
-            console.log("新闻评论", res);
+            console.log("活动评论", res);
             if (res.success == "true") {
               let instance = Toast("评论成功");
               setTimeout(() => {

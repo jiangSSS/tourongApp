@@ -17,7 +17,7 @@
                         </div>
                         <div class="sendBtn flr likeBtn" v-if="follow" @click="isFollow">已关注</div>
                         <div class="sendBtn flr" v-else @click="noFollow">关注</div>
-                        <div class="sendBtn flr" @click="$router.push('/sendProject')">投递项目</div>
+                        <div class="sendBtn flr" @click="handleSend">投递项目</div>
                     </div>
                 </div>
                 <div class="user clearfix" @click="$router.push('/investors')">
@@ -25,7 +25,7 @@
                     <span class="fll">李先生</span>
                     <div class="flr">
                         <span class="">北京开拓明天有限公司</span>
-                        <i class="iconfont icon-xiangyou"></i>  
+                        <i class="iconfont icon-xiangyou"></i>
                     </div>
 
                 </div>
@@ -168,6 +168,8 @@
     import Header from "@/components/Header.vue"
     import Footer from "@/components/Bottom.vue"
     import { Toast } from 'mint-ui'
+    import { Dialog } from "vant";
+    import * as Cookies from 'js-cookie'
 
     export default {
         components: {
@@ -215,40 +217,52 @@
                         time: "2018-01-01"
                     },
                 ],
-                moneyDetail:[],
-                follow:0,
-                id:""
+                moneyDetail: [],
+                follow: 0,
+                id: ""
             }
         },
-        methods:{
+        methods: {
+            handleSend() {
+                if (Cookies.get('userKey')) {
+                    Dialog.alert({
+                        message: "投递成功，平台会尽快为你安排。"
+                    }).then(() => {
+                        // on close
+                    });
+                } else {
+                    this.$router.push('/login')
+                }
+
+            },
             // 投资详情
-            getMoneyDetail(){
+            getMoneyDetail() {
                 this.id = this.$route.query.id
-                this.$axios.get(`/jsp/wap/trCapital/ctrl/jsonCapitalDetail.jsp?id=${this.id}`).then(res=>{
-                    console.log("投资详情",res)
+                this.$axios.get(`/jsp/wap/trCapital/ctrl/jsonCapitalDetail.jsp?id=${this.id}`).then(res => {
+                    console.log("投资详情", res)
                     this.moneyDetail = res.data
                 })
             },
             // 获取关注状态
-            getFollow(){
-                this.$axios.get(`/jsp/wap/trCapital/ctrl/jsonIsFollow.jsp?id=${this.id}`).then(res=>{
+            getFollow() {
+                this.$axios.get(`/jsp/wap/trCapital/ctrl/jsonIsFollow.jsp?id=${this.id}`).then(res => {
                     // this.follow 
-                    console.log("是否关注",res)
+                    console.log("是否关注", res)
                     this.follow = Number(res.data)
                 })
             },
-             // 关注
-            noFollow(){
-                this.$axios.get(`/jsp/wap/trCapital/do/doFollow.jsp?id=${this.id}`).then(res=>{
-                    console.log("投资关注",res)
-                    if(res.success == "true"){
+            // 关注
+            noFollow() {
+                this.$axios.get(`/jsp/wap/trCapital/do/doFollow.jsp?id=${this.id}`).then(res => {
+                    console.log("投资关注", res)
+                    if (res.success == "true") {
                         let instance = Toast('关注成功');
                         setTimeout(() => {
                             instance.close();
                         }, 1000);
                         this.follow = 1
-                    } else{
-                        let instance = Toast('关注失败');
+                    } else {
+                        let instance = Toast('关注失败，请检查登录状态');
                         setTimeout(() => {
                             instance.close();
                         }, 1000);
@@ -256,16 +270,16 @@
                 })
             },
             // 取消关注
-            isFollow(){
-                this.$axios.get(`/jsp/wap/trCapital/do/doUnfollow.jsp?id=${this.id}`).then(res=>{
-                    console.log("取消关注",res)
-                    if(res.success == "true"){
+            isFollow() {
+                this.$axios.get(`/jsp/wap/trCapital/do/doUnfollow.jsp?id=${this.id}`).then(res => {
+                    console.log("取消关注", res)
+                    if (res.success == "true") {
                         let instance = Toast('已取消关注');
                         setTimeout(() => {
                             instance.close();
                         }, 2000);
                         this.follow = 0
-                    } else{
+                    } else {
                         let instance = Toast('取消失败');
                         setTimeout(() => {
                             instance.close();
@@ -274,7 +288,7 @@
                 })
             },
         },
-        created(){
+        created() {
             this.getMoneyDetail()
             this.getFollow()
         }
@@ -405,15 +419,18 @@
         line-height: 2;
         color: rgb(128, 128, 128);
     }
-    .message{
+
+    .message {
         background: #fff;
         padding: .2rem;
         margin-bottom: .3rem
     }
-    .message div{
+
+    .message div {
         line-height: 2
     }
-    .message div span:nth-child(1){
+
+    .message div span:nth-child(1) {
         font-family: "PingFang";
         color: rgb(137, 137, 137);
         display: inline-block;

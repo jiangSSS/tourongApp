@@ -2,11 +2,11 @@
     <div class="all">
         <div class="loginBody">
             <img src="../../../static/app/img/login_bg.jpg" class="bg" alt="">
-            <p class="loginTitle">登录注册</p>
-
+            <p class="loginTitle" v-if="fail">登录注册</p>
+            <p class="loginTitle" v-else>找回密码</p>
             <div class="container_warp">
                 <img src="../../../static/app/img/loginLogo.png" class="loginLogo">
-                <div class="login_tabs">
+                <div class="login_tabs" v-if="fail">
                     <van-tabs v-model="active">
                         <van-tab title="登录">
                             <div class="loginBox">
@@ -23,8 +23,8 @@
                                         <input v-model="login_checked" type="checkbox" @click="!login_checked" class="checkBox">
                                         <span class="loginDesc">两周内自动登录</span>
                                     </div>
-                                    <div class="flr ">
-                                        <span class="loginDesc" style="display:none">
+                                    <div class="flr " @click="fail = false">
+                                        <span class="loginDesc">
                                             忘记密码？
                                         </span>
 
@@ -36,15 +36,10 @@
                         <van-tab title="注册">
                             <div class="loginBox">
                                 <div class="tel">
-                                    <span v-if="isShow" class="tel">手机号码</span>
-                                    <!-- <span v-else class="tel">邮箱账号</span> -->
-                                    <!-- <span class="flr email" v-if="isShow" @click="reg">邮箱注册</span> -->
-                                    <!-- <span class="flr email" v-else @click="reg"> -->
-                                    <!-- <i class="iconfont icon-xiangzuo"></i> 手机注册</span> -->
+                                    <span class="tel">手机号码</span>
                                 </div>
                                 <div>
                                     <input class="login_input" type="text" v-model="registerData.mobile" placeholder="请输入正确的手机号">
-                                    <!-- v-if="isShow" <input class="login_input" type="text" v-else placeholder="请输入正确的邮箱号"> -->
                                 </div>
                                 <div class="pwd">验证码</div>
                                 <div class="clearfix code">
@@ -73,6 +68,32 @@
                         </van-tab>
                     </van-tabs>
                 </div>
+                <div v-else class="login_tabs">
+                    <div class="loginBox">
+                        <div @click="fail = true" class="backLogin flr">返回登录</div>
+                        <div class="tel">
+                            <span class="tel">手机号码</span>
+                        </div>
+                        <div>
+                            <input class="login_input" type="text" v-model="findPwd.mobile" placeholder="请输入正确的手机号">
+                        </div>
+                        <div class="pwd">验证码</div>
+                        <div class="clearfix code">
+                            <input v-model="findPwd.code" class="login_input fll" type="text" placeholder="请输入验证码">
+                            <span v-show="code_show" @click="getCode" class="gain">获取验证码</span>
+                            <span v-show="!code_show" class="gain">{{count}}s</span>
+                        </div>
+                        <div class="pwd">新密码</div>
+                        <div>
+                            <input v-model="findPwd.newPwd" class="login_input" type="password" placeholder="设置新密码" @keyup.enter="handleReg">
+                        </div>
+                        <div class="pwd">确认密码</div>
+                        <div>
+                            <input v-model="findPwd.reNewPwd" class="login_input" type="password" placeholder="确认新密码" @keyup.enter="handleReg">
+                        </div>
+                        <mt-button type="default" class="loginBtn" @click="handleFindPwd">提交</mt-button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -90,8 +111,8 @@
         },
         data() {
             return {
+                fail: true,
                 active: 0,
-                isShow: true,
                 isClick: true,
                 login_show: true,
                 code_show: true,
@@ -109,14 +130,17 @@
                     pwd: "",
                     email: ""
                 },
+                findPwd: {
+                    mobile: "",
+                    code: "",
+                    newPwd: "",
+                    reNewPwd: ""
+                },
                 count: '',
                 timer: null,
             };
         },
         methods: {
-            reg() {
-                this.isShow = !this.isShow;
-            },
             // 获取验证码
             getCode() {
                 const TIME_COUNT = 60;
@@ -140,7 +164,7 @@
                             instance.close();
                         }, 2000);
                     } else {
-                        let instance = Toast('错误');
+                        let instance = Toast(res.message);
                         setTimeout(() => {
                             instance.close();
                         }, 2000);
@@ -165,7 +189,7 @@
                             this.$router.push({ name: "home" })
                         }, 2000);
                     } else {
-                        let instance = Toast('登录失败');
+                        let instance = Toast('账号或密码错误');
                         setTimeout(() => {
                             instance.close();
                         }, 2000);
@@ -177,28 +201,35 @@
                 if (this.registerData.code != '') {
                     this.$axios.get('/jsp/wap/login/do/doRegister.jsp', { params: { code: this.registerData.code, mobile: this.registerData.mobile, pwd: this.registerData.pwd, email_: this.registerData.email } }).then(res => {
                         let instance = Toast('注册成功');
-                                setTimeout(() => {
-                                    instance.close();
-                                }, 2000);
+                        setTimeout(() => {
+                            instance.close();
+                        }, 2000);
                         if (this.login_checked) {
                             Cookies.set("userKey", res.data, { expires: 14 });
                         } else {
                             Cookies.set("userKey", res.data, { expires: 3 });
                         }
-                        this.$axios.post('/jsp/wap/login/do/doLogin.jsp', qs.stringify({ mobile: this.registerData.mobile, pwd: this.registerData.pwd, loginType: this.loginData.loginType })).then(res => {
-                            if (res.success == "true") {
-                                let instance = Toast('登录成功,欢迎您');
-                                setTimeout(() => {
-                                    instance.close();
-                                }, 2000);
-                                this.$router.push({ name: 'home' })
-                            } else {
-                                let instance = Toast('错误，用户不存在');
-                                setTimeout(() => {
-                                    instance.close();
-                                }, 2000);
-                            }
-                        })
+                        if (res.success == "true") {
+                            this.$axios.post('/jsp/wap/login/do/doLogin.jsp', qs.stringify({ mobile: this.registerData.mobile, pwd: this.registerData.pwd, loginType: this.loginData.loginType })).then(res => {
+                                if (res.success == "true") {
+                                    let instance = Toast('登录成功,欢迎您');
+                                    setTimeout(() => {
+                                        instance.close();
+                                    }, 2000);
+                                    this.$router.push({ name: 'home' })
+                                } else {
+                                    let instance = Toast('错误，用户不存在');
+                                    setTimeout(() => {
+                                        instance.close();
+                                    }, 2000);
+                                }
+                            })
+                        } else {
+                            let instance = Toast('错误，用户不存在');
+                            setTimeout(() => {
+                                instance.close();
+                            }, 2000);
+                        }
                     })
                 } else {
                     let instance = Toast('请输入验证码');
@@ -207,6 +238,80 @@
                     }, 2000);
                 }
             },
+            handleReg() {
+                if (this.registerData.mobile == '') {
+                    let instance = Toast('请输入手机号');
+                    setTimeout(() => {
+                        instance.close();
+                    }, 2000);
+                } else if (this.registerData.mobile.length != 11) {
+                    let instance = Toast('手机号不正确');
+                    setTimeout(() => {
+                        instance.close();
+                    }, 2000);
+                } else if (this.registerData.code == '') {
+                    let instance = Toast('请输入验证码');
+                    setTimeout(() => {
+                        instance.close();
+                    }, 2000);
+                } else if (this.registerData.email == '') {
+                    let instance = Toast('请输入邮箱');
+                    setTimeout(() => {
+                        instance.close();
+                    }, 2000);
+                } else if (this.registerData.pwd.length < 6) {
+                    let instance = Toast('密码不能少于6位');
+                    setTimeout(() => {
+                        instance.close();
+                    }, 2000);
+                } else {
+                    this.$axios.get('/jsp/wap/login/do/doRegister.jsp', { params: { code: this.registerData.code, mobile: this.registerData.mobile, pwd: this.registerData.pwd, email_: this.registerData.email_ } }).then(res => {
+                        // let instance = Toast('注册成功');
+                        // setTimeout(() => {
+                        //     instance.close();
+                        // }, 2000);
+                        if (this.login_checked) {
+                            Cookies.set("userKey", res.data, { expires: 14 });
+                        } else {
+                            Cookies.set("userKey", res.data, { expires: 3 });
+                        }
+                        this.$axios.post('/jsp/wap/login/do/doLogin.jsp', qs.stringify({ mobile: this.registerData.mobile, pwd: this.registerData.pwd, loginType: this.loginData.loginType })).then(res => {
+                            if (res.success == "true") {
+                                this.$router.push({ name: 'home' })
+                            } else {
+                                let instance = Toast(res.message);
+                                setTimeout(() => {
+                                    instance.close();
+                                }, 2000);
+                            }
+                        })
+                    })
+                }
+            },
+            handleFindPwd() {
+                this.$axios.get(`/jsp/wap/center/do/doEditPwd.jsp`, qs.stringify(this.findPwd)).then(res => {
+                    console.log("找回密码", res)
+                    // if (res.success == "true") {
+                    //     if (this.login_checked) {
+                    //         Cookies.set("userKey", res.data, { expires: 14 })
+                    //     } else {
+                    //         Cookies.set("userKey", res.data, { expires: 3 })
+                    //     }
+                    //     let instance = Toast('登录成功');
+                    //     setTimeout(() => {
+                    //         instance.close();
+                    //     }, 2000);
+                    //     setTimeout(() => {
+                    //         this.$router.push({ name: "home" })
+                    //     }, 2000);
+                    // } else {
+                    //     let instance = Toast('账号或密码错误');
+                    //     setTimeout(() => {
+                    //         instance.close();
+                    //     }, 2000);
+                    // }
+                })
+            }
         },
 
     };
@@ -225,8 +330,10 @@
         position: absolute;
         top: -0.8rem;
         right: 0.3rem;
+    }
 
-
+    .backLogin {
+        color: #ccc
     }
 
     .container_warp {
@@ -308,9 +415,10 @@
     .email {
         color: #005982;
     }
-    input::-webkit-input-placeholder{
+
+    input::-webkit-input-placeholder {
         font-size: .3rem;
         font-family: "PingFang";
-        color: rgb( 200, 200, 200 );
+        color: rgb( 200, 200, 200);
     }
 </style>

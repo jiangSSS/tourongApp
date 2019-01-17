@@ -27,8 +27,8 @@ Vue.prototype.$axios = $axios
 Vue.prototype.$url = "http://192.168.4.11:8484"
 
 import store from './store'
-// import vueToTop from 'vue-totop'
-// Vue.use(vueToTop)
+import vueToTop from 'vue-totop'
+Vue.use(vueToTop)
 
 // 侧边划出插件
 import DrawerLayout from 'vue-drawer-layout'

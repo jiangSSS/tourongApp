@@ -1,7 +1,7 @@
 <template>
     <div class="all">
         <div class="header">
-            <div class="searchBox">
+            <div class="searchBox" @click="$router.push('/search')">
                 <i class="iconfont icon-sousuo"></i>
             </div>
             <div class="logoBox">
@@ -97,9 +97,10 @@
                         <i class="iconfont icon-xiangyou"></i>
                     </span>
                 </div>
-                <div class="clearfix moneyBox" v-for="item in capitalList.slice(0,2)" :key="item.index">
-                    <router-link :to="{path:'/money/moneydetail',query:{id:item.id}}">
-                        <img :src="$url + item.recommendImgPath" class="flr wellMoney">
+                <div class=" moneyBox" v-for="item in capitalList.slice(0,2)" :key="item.index">
+                    <router-link :to="{path:'/money/moneydetail',query:{id:item.id}}" class="clearfix">
+                        <div class="flr imgBox">
+                            <img :src="$url + item.recommendImgPath" class="wellMoney"> </div>
                         <div class="fll rightContent">
                             <div class="rightTitle">{{item.title}}</div>
                             <div class="rightList">
@@ -137,14 +138,20 @@
                     <i class="iconfont icon-xiangyou"></i>
                 </span>
             </div>
-            <div v-for="(item,index) in pageList.slice(0,4)" :key="index">
+            <div v-for="item in pageList.slice(0,4)" :key="item.index">
                 <router-link :to="{path:'/newsDetail',query:{id:item.id}}">
                     <div class="clearfix rows">
-                        <div class="nums flr">
-                            <div class="clearfix" style="margin-top:.2rem">
+                        <div class="nums clearfix flr">
+                            <div class="clearfix titleBox">
                                 <img src="../../../static/app/img/my/dian.jpg" class="dian fll">
                                 <span class="fll messageTitle">{{item.title}}</span>
-                                <span class="flr messageTime">{{item.addTimeStr.slice(0,10)}}</span>
+                            </div>
+                            <div class="messageTime">
+                                <span class="fll timestatus">{{item.addTimeStr.slice(0,10)}}</span>
+                                <span class="flr rightTime">
+                                    <span>(来源：
+                                        <span>{{item.source}}</span> )</span>
+                                </span>
                             </div>
                             <div class="newsDesc">
                                 {{item.brief}}
@@ -249,13 +256,39 @@
 
 <style scoped lang="scss">
     // 头部
-    .all {position: relative;width: 100%;}
-    .newsImg {width: 2rem;}
-    .aaaa { width: 4.5rem;color: #333 !important;}
-    .titleImg {font-size: 0.24rem;color: #ccc;}
-    .timedata { margin-left: 0.4rem;}
-    .threes {display: flex;justify-content: space-between;}
-    .threes img {width: 2rem; height: 1.6rem;}
+    .all {
+        position: relative;
+        width: 100%;
+    }
+
+    .newsImg {
+        width: 2rem;
+    }
+
+    .aaaa {
+        width: 4.5rem;
+        color: #333 !important;
+    }
+
+    .titleImg {
+        font-size: 0.24rem;
+        color: #ccc;
+    }
+
+    .timedata {
+        margin-left: 0.4rem;
+    }
+
+    .threes {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .threes img {
+        width: 2rem;
+        height: 1.6rem;
+    }
+
     .header {
         display: flex;
         justify-content: space-between;
@@ -277,7 +310,7 @@
             width: 0.45rem;
             text-align: center;
             margin-top: 0.1rem;
-            margin-right: 0.2rem;   
+            margin-right: 0.2rem;
         }
         .search {
             font-size: 0.3rem;
@@ -292,7 +325,11 @@
             }
         }
     }
-    .detail {padding-bottom: 1.4rem;}
+
+    .detail {
+        padding-bottom: 1.4rem;
+    }
+
     .noData {
         text-align: center;
         color: #999;
@@ -395,6 +432,7 @@
         }
         .wellImg {
             width: 100%;
+            height: 3rem;
         }
         .wellContent {
             font-size: 0.24rem;
@@ -410,14 +448,20 @@
     }
 
     .wellMoney {
+        width: 100%;
+        height: 100%;
+    }
+
+    .imgBox {
         width: 50%;
+        height: 4.2rem;
     }
 
     .moneyBox:nth-child(even) {
         .rightContent {
             float: right;
         }
-        .wellMoney {
+        .imgBox {
             float: left;
         }
     }
@@ -433,9 +477,9 @@
             font-family: "Microsoft YaHei";
             color: rgb(62, 58, 57);
             font-weight: bold;
-            padding-top: 0.2rem;
-            margin-bottom: 0.15rem;
+            padding-bottom: 0.1rem; // margin-bottom: .1rem;
             overflow: hidden;
+            height: .9rem;
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -469,6 +513,7 @@
         text-overflow: ellipsis;
         width: 2.2rem;
     }
+
     .dian {
         margin: 0.15rem;
     }
@@ -478,23 +523,37 @@
     }
 
     .rows {
-        padding: 0.15rem 0.3rem;
-        border-bottom: .2rem solid #fafafa;
+        padding: 0.1rem 0.3rem;
+        border-bottom: 0.2rem solid #fafafa;
         .messageTitle {
-            font-size: 0.26rem;
+            font-size: 0.24rem;
             font-family: "Microsoft YaHei";
             color: rgb(51, 51, 51);
             overflow: hidden;
-            white-space: nowrap;
             text-overflow: ellipsis;
-            width: 2.4rem;
-            line-height: 2
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            width: 80%;
+            /* line-height: 2; */
         }
         .messageTime {
-            font-size: 0.22rem;
+            font-size: 0.2rem;
             font-family: "Microsoft YaHei";
             color: rgb(137, 137, 137);
-            line-height: 2
+            line-height: 2;
+        }
+        .messageTime span {
+            font-size: .2rem
+        }
+        .timestatus {
+            margin-left: .3rem
+        }
+        .rightTime {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 2.4rem
         }
     }
 
@@ -512,6 +571,7 @@
         }
     }
 
+
     .nums {
         width: 4.5rem
     }
@@ -522,11 +582,10 @@
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         width: 4.2rem;
         font-size: .24rem;
         margin-top: .1rem;
     }
-
 </style>

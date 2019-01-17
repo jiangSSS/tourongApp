@@ -195,11 +195,9 @@
     .detail {
         padding-bottom: 1.1rem;
     }
-
     img {
         width: 100%
     }
-
     .mint-header {
         background: none;
         color: rgba(255, 255, 255, .8);
@@ -212,13 +210,11 @@
         font-size: .4rem;
         z-index: 1000
     }
-
     .bg {
         position: relative;
         height: 5.5rem;
         background: #f3f5f7
     }
-
     .userBox {
         background: #fff;
         margin: .3rem;
@@ -227,11 +223,9 @@
         top: 1rem;
         width: 92%;
     }
-
     .usera {
         border-bottom: 1px solid #f3f5f7
     }
-
     .avatarBox {
         // border: 1px solid #ccc;
         border-radius: 50%;
@@ -239,7 +233,6 @@
         height: 1.5rem;
         position: relative;
     }
-
     .edit {
         width: .5rem;
         border-radius: 100%;
@@ -347,7 +340,7 @@
         }
         .icon {
             width: .3rem;
-            margin-top: .31rem;
+            margin-top: .4rem;
             float: left;
         }
     }

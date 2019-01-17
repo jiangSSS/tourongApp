@@ -30,7 +30,7 @@
                                 <i class="iconfont icon-xiangshang flr" v-else @click="handleCloseList1"></i>
                             </div>
                             <div class="type" v-show="isShow1">
-                                 <van-checkbox-group v-model="regionArea" @change="regionAreaItem">
+                                <van-checkbox-group v-model="regionArea" @change="regionAreaItem">
                                     <van-checkbox v-for="(item, index) in regionList" :key="index" :name="item" class="checkItem" checked-color="#005982">
                                         {{ item.dataName }}
                                     </van-checkbox>
@@ -43,7 +43,7 @@
                                 <i class="iconfont icon-xiangshang flr" v-else @click="handleCloseList3"></i>
                             </div>
                             <div class="type" v-show="isShow3">
-                                 <van-checkbox-group v-model="investRegionArea" @change="investRegionItem">
+                                <van-checkbox-group v-model="investRegionArea" @change="investRegionItem">
                                     <van-checkbox v-for="(item, index) in investRegionList" :key="index" :name="item" class="checkItem" checked-color="#005982">
                                         {{ item.dataName }}
                                     </van-checkbox>
@@ -70,12 +70,14 @@
                 <div class="text">
                     <div class="index">
                         <div class="header clearfix">
-                            <div class="flr" @click="$router.push('/issueMoney')"><button class="sendMoney">发布资金</button></div>
-                            <div class="search fll">
-                                <input type="text" placeholder="请输入内容" class="input_search" />
-                                <i class="iconfont icon-sousuo1"></i>
+                            <div class="flr" @click="sendMoney">
+                                <button class="sendMoney">发布资金</button>
                             </div>
-                            
+                            <div class="search fll">
+                                <input type="text" placeholder="请输入内容" v-model="title" class="input_search" />
+                                <i class="iconfont icon-sousuo1" @click="search"></i>
+                            </div>
+
                         </div>
                         <div class="detail">
                             <div class="chooseTitle">
@@ -94,17 +96,18 @@
                                             <i class="iconfont icon-shijian"></i>
                                             <span>{{item.addTimeStr}}</span>
                                         </div>
-                                        <div class="sendBtn flr" @click="$router.push('/sendProject')">
+                                        <div class="sendBtn flr" @click="handleSend">
                                             <!-- {{item.sendBtn}} -->
                                             投递项目
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <!-- <div>
                                     <div class="noData" v-if="this.totalCount > this.pageList.length">加载中...</div>
                                     <div class="noData" v-else>--- 没有更多数据了 ---</div>
-                                </div>
+                                </div> -->
                             </div>
+                             <div class="noData">--- 没有更多数据了 ---</div>
                         </div>
                         <Footer class="footer"></Footer>
                     </div>
@@ -118,19 +121,21 @@
 <script>
     import Header from "@/components/Header.vue"
     import Footer from "@/components/Bottom.vue"
-    import Choose from "@/views/money/choose.vue";
+    // import Choose from "@/views/money/choose.vue";
+    import { Dialog } from "vant";
+    import * as Cookies from 'js-cookie'
     export default {
         components: {
             Footer,
             Header,
-            Choose
+            // Choose
         },
         data() {
             return {
                 pageList: [],
                 loading: false,
                 pn: 1,
-                pageNumber:1,
+                pageNumber: 1,
                 totalCount: [],
                 // 
                 isShow: false,
@@ -152,11 +157,23 @@
                 investTypes: "",
                 regions: "",
 
-                investRegionArea:[],
-                regionArea:[]
+                investRegionArea: [],
+                regionArea: [],
+                title: ""
             }
         },
         methods: {
+            handleSend() {
+                if (Cookies.get('userKey')) {
+                    Dialog.alert({
+                        message: "投递成功，平台会尽快为你安排。"
+                    }).then(() => {
+                        // on close
+                    });
+                } else {
+                    this.$router.push('/login')
+                }
+            },
             // 打开筛选
             handleToggleDrawer() {
                 this.$refs.drawerLayout.toggle();
@@ -276,19 +293,6 @@
                     this.investAmountList[index].checked = true
                 }
             },
-            // 所属地区筛选
-            // region(e, index) {
-            //     this.regions = e
-            //     if (this.regionList[index].checked) {
-            //         this.regionList[index].checked = !this.regionList[index].checked
-            //         this.regions = ''
-            //     } else {
-            //         this.regionList.forEach(item => {
-            //             item.checked = false
-            //         });
-            //         this.regionList[index].checked = true
-            //     }
-            // },
             regionAreaItem(val) {
                 let regionList = []
                 val.forEach(item => {
@@ -303,19 +307,6 @@
                 })
                 this.investRegions = investRegionList.join(',')
             },
-            // 投资地区筛选
-            // investRegion(e, index) {
-            //     this.investRegions = e
-            //     if (this.investRegionList[index].checked) {
-            //         this.investRegionList[index].checked = !this.investRegionList[index].checked
-            //         this.investRegions = ''
-            //     } else {
-            //         this.investRegionList.forEach(item => {
-            //             item.checked = false
-            //         });
-            //         this.investRegionList[index].checked = true
-            //     }
-            // },
             // 投资行业筛选
             investIndustry(e, index) {
                 this.investIndustrys = e
@@ -331,13 +322,33 @@
             },
             // 清空
             handleRemove() {
-                
+
             },
             // 确定
             handleSure() {
                 this.getDatalList(this.investAmounts, this.investIndustrys, this.investRegions, this.investTypes, this.regions)
                 this.$refs.drawerLayout.toggle(false);
 
+            },
+            //  筛选
+            search() {
+                this.loading = true;
+                this.$axios.get("/jsp/wap/trCapital/ctrl/jsonCapitalPage.jsp", {params: { investIndustrys: this.investIndustrys, investTypes: this.investTypes, regions: this.regions, investRegions: this.investRegions, investAmounts: this.investAmounts, title: this.title } })
+                    .then(res => {
+                        if (res.success == "true") {
+                            this.pageList = res.data.pageList;
+                            this.totalCount = res.data.pagination.totalCount;
+                            this.pn = 1;
+                            this.loading = false;
+                        }
+                    });
+            },
+            sendMoney(){
+                if (Cookies.get('userKey')) {
+                    this.$router.push('/issueMoney')
+                } else {
+                    this.$router.push('/login')
+                }
             }
         },
         created() {
@@ -350,8 +361,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
     .detail {
-        padding-bottom: 1.2rem;
-        // background: #fafafa;
+        padding-bottom: 1.2rem; // background: #fafafa;
     }
 
     img {
@@ -539,7 +549,7 @@
 
     .radioItem input {
         // visibility: hidden;
-         // display: none
+        // display: none
     }
 
     .active {

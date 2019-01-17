@@ -7,25 +7,28 @@
                     <div class="title">{{newsDetail.title}}</div>
                     <div class="clearfix">
                         <div class="fll">
-                            <span>作者：</span><span>{{newsDetail.author}}</span><span>(来源：<span>{{newsDetail.source}}</span> )</span>
+                            <span>作者：</span>
+                            <span>{{newsDetail.author}}</span>
+                            <span>(来源：
+                                <span>{{newsDetail.source}}</span> )</span>
                         </div>
-                        <div class="flr"><span>{{newsDetail.addTimeStr}}</span></div>             
+                        <div class="flr">
+                            <span>{{newsDetail.addTimeStr}}</span>
+                        </div>
                     </div>
                 </div>
                 <div>
                     <div class="contentImg">
                         <img :src="$url + newsDetail.imgPath" alt="">
                     </div>
-                    <div class="contentText" v-html="newsDetail.content"></div>     
+                    <div class="contentText" v-html="newsDetail.content"></div>
                 </div>
             </div>
         </div>
         <div class="footer">
-            <div>
-                <i class="iconfont icon-dianzan"></i>
-                <span>60</span>
-            </div>
-            <div @click="$router.push('/activityDetail/comment')">
+            <div v-if="good" @click="isGood"><i class="iconfont icon-dianzan" style="color:#f00"></i><span>{{newsDetail.greatNum}}</span></div>
+            <div v-else @click="noGood"><i class="iconfont icon-dianzan"></i><span>{{newsDetail.greatNum}}</span></div>
+            <div @click="$router.push('/news/newsComment')">
                 <i class="iconfont icon-weibiaoti-"></i>
                 <span>60</span>
             </div>
@@ -34,102 +37,75 @@
                 <span>分享</span>
             </div>
         </div>
-        <!-- <div class="apply" @click="handleApply">
-            <i class="iconfont icon-bianji1"></i>
-            <span>报名</span>
-        </div> -->
-        <mu-dialog width="400" center class="applyDialog" :open.sync="openSimple">
-            <p class="dialogTitle">报名信息</p>
-            <div class="">
-                <i class="iconfont icon-My"></i>
-                <input class="" type="text" placeholder="请输入姓名">
-            </div>
-            <div>
-                <i class="iconfont icon-shouji"></i>
-                <input type="text" placeholder="请输入手机号">
-
-            </div>
-            <div>
-                <i class="iconfont icon-neirong"></i>
-                <input type="text" placeholder="请输入内容">
-
-            </div>
-            <mu-button class="applyBtn" @click="closeApply">确认</mu-button>
-        </mu-dialog>
     </div>
 </template>
 
 <script>
     import Header from "@/components/Header.vue"
     import Footer from "@/components/Bottom.vue"
+    import { Toast } from "mint-ui"
 
     export default {
         components: {
             Header,
-            Footer
+            Footer,
+            Toast
         },
         data() {
             return {
-                newsDetail:[],
-                core: [
-                    {
-                        name: "张麟（法人）",
-                        detail: "之前就职于苏州工业园区大型企业10多年，管理企业大型项目，对现代化企业管理流程熟悉。"
-                    },
-                    {
-                        name: "黄羽（总经理）",
-                        detail: "之前就职于苏州工业园区大型企业10多年，管理企业大型项目，对现代化企业管理流程熟悉。"
-                    },
-                ],
-                review: [
-                    {
-                        title: "完整的逻辑架构",
-                        desc: "打造符合投资人口味的完整计划书逻辑框架和商业模式，提出优化建议。"
-                    },
-                    {
-                        title: "清晰的商业模式",
-                        desc: "打造符合投资人口味的完整计划书逻辑框架和商业模式，提出优化建议。"
-                    },
-                ],
-                mayProject: [
-                    {
-                        title: "预防近视阻止近视发生发展的可穿戴品，健康医疗领域，需要融资项目，金额为100万元",
-                        time: "2018-01-01"
-                    },
-                    {
-                        title: "预防近视阻止近视发生发展的可穿戴品，健康医疗领域，需要融资项目，金额为100万元",
-                        time: "2018-01-01"
-                    },
-                    {
-                        title: "预防近视阻止近视发生发展的可穿戴品，健康医疗领域，需要融资项目，金额为100万元",
-                        time: "2018-01-01"
-                    },
-                    {
-                        title: "预防近视阻止近视发生发展的可穿戴品，健康医疗领域，需要融资项目，金额为100万元",
-                        time: "2018-01-01"
-                    },
-                ],
-                openSimple: false,
-                // widthDialog:"3rem"
+                id: "",
+                good: 0,
+                newsDetail: [],
             }
         },
         methods: {
-            handleApply() {
-                this.openSimple = true;
-            },
-            closeApply() {
-                this.openSimple = false;
-            },
-            getNewsDetail(){
-                let id = this.$route.query.id
-                this.$axios.get(`/jsp/wap/trNews/ctrl/jsonNewsDetail.jsp?id=${id}`).then(res=>{
-                    console.log("新闻详情",res)
+            // 获取新闻详情
+            getNewsDetail() {
+                this.id = this.$route.query.id
+                this.$axios.get(`/jsp/wap/trNews/ctrl/jsonNewsDetail.jsp?id=${this.id}`).then(res => {
+                    console.log("新闻详情", res)
                     this.newsDetail = res.data
+                })
+            },
+            // 是否点赞
+            getGood() {
+                this.$axios.get(`/jsp/wap/trNews/do/isGreat.jsp?id=${this.id}`).then(res => {
+                    console.log("是否点赞", res)
+                    this.good = Number(res.data)
+                })
+            },
+            // 点赞
+            noGood() {
+                this.$axios.get(`/jsp/wap/trNews/do/doGreat.jsp?id=${this.id}`).then(res => {
+                    console.log("点赞", res)
+                    if (res.success == "true") {
+                        let instance = Toast('已点赞');
+                        setTimeout(() => {
+                            instance.close();
+                        }, 1000);
+                        this.good = 1
+                        this.newsDetail.greatNum = Number(this.newsDetail.greatNum + 1)
+                    }
+                })
+            },
+            // 取消点赞
+            isGood() {
+                this.$axios.get(`/jsp/wap/trNews/do/cancelGreat.jsp?id=${this.id}`).then(res => {
+                    console.log("取消点赞", res)
+                    if (res.success == "true") {
+                        let instance = Toast('已取消点赞');
+                        setTimeout(() => {
+                            instance.close();
+                        }, 1000);
+                        this.good = 0
+                        this.newsDetail.greatNum = Number(this.newsDetail.greatNum - 1)
+                    }
                 })
             }
         },
-        created(){
+        created() {
             this.getNewsDetail()
+            this.getGood()
         }
     }
 </script>
@@ -144,6 +120,7 @@
     img {
         width: 100%
     }
+
 
     .detail {
         background: #fff;
@@ -202,6 +179,7 @@
             }
         }
     }
+
     .icon-dianzan,
     .icon-weibiaoti-,
     .icon-share {
@@ -237,7 +215,7 @@
         margin-top: .4rem
     }
 
-        /deep/ {
+    /deep/ {
         .contentText {
             img {
                 max-width: 6rem !important;

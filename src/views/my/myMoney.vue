@@ -2,42 +2,45 @@
     <div>
         <Header></Header>
         <div class="">
-            <mu-container class="subTabs">
+            <!-- <mu-container class="subTabs">
                 <mu-tabs :value.sync="active2" inverse color="#005982" indicator-color="#005982" full-width>
                     <mu-tab>全部</mu-tab>
                     <mu-tab>已发布</mu-tab>
                     <mu-tab>草稿箱</mu-tab>
                 </mu-tabs>
                 <div class="demo-text" v-if="active2 === 0">
-                    <div v-for="(item,index) in pageList" :key="index">
-                        <div class="projectBox">
-                            <div class="clearfix">
-                                <div class="peojectTitle fll">{{item.title}}</div>
-                                <span class="flr cancleBtn" v-if="item.status == '0'">未发布</span>
-                                <span class="flr cancleBtn" v-else :class="item.status  == '5' ? ' being':'' + item.status == '10' ? ' already':'' + item.status == '15'? ' fail':''">{{item.status == '5' ? '审核中':'' + item.status == '10' ? '已发布':'' + item.status == '15'? '':''}}</span>
-                            </div>
-                            <div class="textContent">
-                                <div>
-                                    <span>投资资金：</span>
-                                    <span class="lookNum">{{item.investAmountName}}</span>
-                                </div>
+                    <div v-infinite-scroll="loadMore" infinite-scroll-disabled="loading">
+                        <div v-for="(item,index) in pageList" :key="index">
+                            <div class="projectBox">
                                 <div class="clearfix">
-                                    <div class="fll startTime">{{item.addTimeStr.slice(0,10)}}</div>
-                                    <div class="flr">
-                                        <mu-button icon color="Normal" class="delete" @click="amend(item.id)">
-                                            <i class="iconfont icon-edit-1-copy"></i>
-                                            <mu-icon value="修改" class="mu-icon"></mu-icon>
-                                        </mu-button>
-                                        <mu-button icon color="Normal" class="delete" @click="delete_item(item.id,index)">
-                                            <i class="iconfont icon-shanchu"></i>
-                                            <mu-icon value="删除" class="mu-icon"></mu-icon>
-                                        </mu-button>
+                                
+                                    <div class="peojectTitle fll" @click="toMoneyDetailPage(item.id,item.status)">{{item.title}}</div>
+                                    <span class="flr cancleBtn" v-if="item.status == '0'">未发布</span>
+                                    <span class="flr cancleBtn" v-else :class="item.status  == '5' ? ' being':'' + item.status == '10' ? ' already':'' + item.status == '15'? ' fail':''">{{item.status == '5' ? '审核中':'' + item.status == '10' ? '已发布':'' + item.status == '15'?
+                                        '':''}}
+                                    </span>
+                                </div>
+                                <div class="textContent">
+                                    <div>
+                                        <span>投资资金：</span>
+                                        <span class="lookNum">{{item.investAmountName}}</span>
+                                    </div>
+                                    <div class="clearfix">
+                                        <div class="fll startTime">{{item.addTimeStr.slice(0,10)}}</div>
+                                        <div class="flr">
+                                            <mu-button icon color="Normal" class="delete" @click="amend(item.id)">
+                                                <i class="iconfont icon-edit-1-copy"></i>
+                                                <mu-icon value="修改" class="mu-icon"></mu-icon>
+                                            </mu-button>
+                                            <mu-button icon color="Normal" class="delete" @click="delete_item(item.id,index)">
+                                                <i class="iconfont icon-shanchu"></i>
+                                                <mu-icon value="删除" class="mu-icon"></mu-icon>
+                                            </mu-button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
-
                     </div>
                     <p v-show="pageList.length == 0" class="noAtt">你没有任何资金哦~</p>
                     <div class="apply" @click="$router.push('/issueMoney')">
@@ -51,7 +54,44 @@
                 <div class="demo-text" v-if="active2 === 2">
                     222
                 </div>
-            </mu-container>
+            </mu-container> -->
+            <div v-infinite-scroll="loadMore" infinite-scroll-disabled="loading">
+                <div v-for="(item,index) in pageList" :key="index">
+                    <div class="projectBox">
+                        <div class="clearfix">
+
+                            <div class="peojectTitle fll" @click="toMoneyDetailPage(item.id,item.status)">{{item.title}}</div>
+                            <span class="flr cancleBtn" v-if="item.status == '0'">未发布</span>
+                            <span class="flr cancleBtn" v-else :class="item.status  == '5' ? ' being':'' + item.status == '10' ? ' already':'' + item.status == '15'? ' fail':''">{{item.status == '5' ? '审核中':'' + item.status == '10' ? '已发布':'' + item.status == '15'? '':''}}
+                            </span>
+                        </div>
+                        <div class="textContent">
+                            <div>
+                                <span>投资资金：</span>
+                                <span class="lookNum">{{item.investAmountName}}</span>
+                            </div>
+                            <div class="clearfix">
+                                <div class="fll startTime">{{item.addTimeStr.slice(0,10)}}</div>
+                                <div class="flr">
+                                    <mu-button icon color="Normal" class="delete" @click="amend(item.id)">
+                                        <i class="iconfont icon-edit-1-copy"></i>
+                                        <mu-icon value="修改" class="mu-icon"></mu-icon>
+                                    </mu-button>
+                                    <mu-button icon color="Normal" class="delete" @click="delete_item(item.id,index)">
+                                        <i class="iconfont icon-shanchu"></i>
+                                        <mu-icon value="删除" class="mu-icon"></mu-icon>
+                                    </mu-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p v-show="pageList.length == 0" class="noAtt">你没有任何资金哦~</p>
+            <div class="apply" @click="$router.push('/issueMoney')">
+                <i class="iconfont icon-youxianzijin"></i>
+                <span>添加资金</span>
+            </div>
         </div>
 
     </div>
@@ -62,87 +102,38 @@
     import { MessageBox } from 'mint-ui';
     export default {
         components: {
-            Header
+            Header,
+            MessageBox
         },
         data() {
             return {
                 active2: 0,
-                projectList: [
-                    {
-                        status: "已发布",
-                        style: 1,
-                        title: "北京某互联网创新创业服务平台项目",
-                        startTime: "2018-01-01 12:11:10",
-                        num: "255"
-                    },
-                    {
-                        status: "审核中",
-                        style: 2,
-                        title: "北京某互联网创新创业服务平台项目",
-                        startTime: "2018-01-01 12:11:10",
-                        num: "255"
-                    },
-                    {
-                        status: "审核失败",
-                        style: 3,
-                        title: "北京某互联网创新创业服务平台项目",
-                        startTime: "2018-01-01 12:11:10",
-                        num: "255"
-                    },
-                    {
-                        status: "存草稿",
-                        style: 4,
-                        title: "北京某互联网创新创业服务平台项目",
-                        startTime: "2018-01-01 12:11:10",
-                        num: "255"
-                    },
-                    {
-                        status: "存草稿",
-                        title: "北京某互联网创新创业服务平台项目",
-                        startTime: "2018-01-01 12:11:10",
-                        num: "255"
-                    },
-                    {
-                        status: "存草稿",
-                        title: "北京某互联网创新创业服务平台项目",
-                        startTime: "2018-01-01 12:11:10",
-                        num: "255"
-                    },
-                    {
-                        status: "存草稿",
-                        title: "北京某互联网创新创业服务平台项目",
-                        startTime: "2018-01-01 12:11:10",
-                        num: "255"
-                    },
-                    {
-                        status: "存草稿",
-                        title: "北京某互联网创新创业服务平台项目",
-                        startTime: "2018-01-01 12:11:10",
-                        num: "255"
-                    },
-                    {
-                        status: "存草稿",
-                        title: "北京某互联网创新创业服务平台项目",
-                        startTime: "2018-01-01 12:11:10",
-                        num: "255"
-                    },
-                    {
-                        status: "存草稿",
-                        title: "北京某互联网创新创业服务平台项目",
-                        startTime: "2018-01-01 12:11:10",
-                        num: "255"
-                    },
-                ],
                 pageList: [],
-                count:1,
+                count: 1,
+                pn: 1,
+                loading: false
             };
         },
         methods: {
+            loadMore() {
+                this.pn = this.pn + 1
+                this.loading = true
+                this.$axios.get(`/jsp/wap/center/ctrl/jsonMyCapitalList.jsp`, { params: { pageNumber: this.pn } }).then(res => {
+                    if (res.success == "true") {
+                        this.pageList = [...this.pageList, ...res.data.pageList]
+                        this.count = res.data.pagination.totalCount
+                        this.loading = false
+                    }
+                })
+            },
             getMyProject(pageNumber) {
-                this.$axios.get(`/jsp/wap/center/ctrl/jsonMyCapitalList.jsp`,{params:{pageNumber}}).then(res => {
+                this.loading = true
+                this.$axios.get(`/jsp/wap/center/ctrl/jsonMyCapitalList.jsp`, { params: { pageNumber } }).then(res => {
                     console.log("我的资金", res)
                     this.pageList = res.data.pageList
                     this.count = Number(res.data.pagination.totalCount)
+                    this.pn = 1
+                    this.loading = false
                 })
             },
             handleApply() {
@@ -155,20 +146,41 @@
                     query: { id }
                 });
                 window.open(href, '_blank');
+                // this.$router.push(" { name: 'issueMoney',query:{id:item.id}}")
+
             },
             // 删除一个项目
             delete_item(id, index) {
-                MessageBox({
-                    title: '提示',
+                MessageBox.confirm('', {
                     message: '即将删除该资金, 是否继续?',
+                    title: '提示',
                     showCancelButton: true
-                }).then(res => {
-                    this.$axios.get(`/jsp/wap/center/do/doDelCapital.jsp?id=${id}`).then(res => {
-                        this.pageList.splice(index, 1)
-                        this.count -= 1
-                    })
-                })
-            }
+                }).then(action => {
+                    if (action == 'confirm') {     //确认的回调
+                        this.$axios.get(`/jsp/wap/center/do/doDelCapital.jsp?id=${id}`).then(res => {
+                            this.pageList.splice(index, 1)
+                            this.count -= 1
+                        })
+                    }
+                }).catch(err => {
+                    if (err == 'cancel') {     //取消的回调
+                    }
+                });
+            },
+            toMoneyDetailPage(id, status) {
+                if (status == '10') {
+                    let { href } = this.$router.resolve({
+                        name: "moneyDetail",
+                        query: { id }
+                    });
+                    window.open(href, '_blank');
+                } else {
+                    let instance = Toast('资金尚未发布成功');
+                    setTimeout(() => {
+                        instance.close();
+                    }, 2000);
+                }
+            },
         },
         created() {
             this.getMyProject()
@@ -263,12 +275,12 @@
             font-size: .2rem;
             display: block
         }
-    } 
-    .noAtt{
+    }
+
+    .noAtt {
         text-align: center;
         margin-top: 4rem
-    }
-    // 状态样式
+    } // 状态样式
     .being {
         color: #FFA500
     }

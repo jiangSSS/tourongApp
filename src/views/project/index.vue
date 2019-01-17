@@ -29,12 +29,73 @@
                         <i class="iconfont icon-xiangyou"></i>
                     </div>
                 </div>
-                <div class="user clearfix">
+                <!-- <div class="user clearfix">
                     <div class="fll titleDesc">融资信息</div>
                     <div class="flr customer">
                         客户要求保密
                     </div>
 
+                </div> -->
+                 <div class="message">
+                    <div>
+                        <span>融资主体:</span>
+                        <span>{{projectDetail.financeBodyName}}</span>
+                    </div>
+                     <div>
+                        <span>所在地区:</span>
+                        <span>{{projectDetail.regionNameStr}}</span>
+
+                    </div>
+                     <div>
+                        <span>公司估值:</span>
+                        <span>{{projectDetail.companyAssessed}}</span>
+
+                    </div>
+                     <div>
+                        <span>市净率(P/B):</span>
+                        <span>{{projectDetail.pb}}</span>
+
+                    </div>
+                     <div>
+                        <span>市盈率(P/E):</span>
+                        <span>{{projectDetail.pe}}</span>
+
+                    </div>
+                     <div>
+                        <span>行业性质:</span>
+                        <span>{{projectDetail.industryName}}</span>
+
+                    </div>
+                    <div>
+                        <span>支付方式:</span>
+                        <span>{{projectDetail.paymentTypeName}}</span>
+
+                    </div>
+                    <div>
+                        <span>融资用途:</span>
+                        <span>{{projectDetail.financingExplain}}</span>
+
+                    </div>
+                    <div>
+                        <span>融资金额:</span>
+                        <span>{{projectDetail.paymentTypeName}}</span>
+
+                    </div>
+                    <div>
+                        <span>总投资额:</span>
+                        <span>{{projectDetail.investIndustryName}}</span>
+
+                    </div>
+                    <div>
+                        <span>意向资金: </span>
+                        <span>{{projectDetail.intentCapitalList}}</span>
+
+                    </div>
+                    <div>
+                        <span>投资方式:</span>
+                        <span>{{projectDetail.financingWayName}}</span>
+
+                    </div>
                 </div>
                 <div class="user clearfix" @click="$router.push('/money/progress')">
                     <div class="fll">查看项目进展</div>
@@ -195,7 +256,7 @@
                         }, 1000);
                         this.follow = 1
                     } else{
-                        let instance = Toast('关注失败');
+                        let instance = Toast('关注失败，请检查登录状态');
                         setTimeout(() => {
                             instance.close();
                         }, 1000);
@@ -363,5 +424,19 @@
     .mayTime {
         line-height: 2;
         color: rgb(128, 128, 128);
+    }
+    .message{
+        background: #fff;
+        padding: .2rem;
+        margin-bottom: .3rem
+    }
+    .message div{
+        line-height: 2
+    }
+    .message div span:nth-child(1){
+        font-family: "PingFang";
+        color: rgb(137, 137, 137);
+        display: inline-block;
+        margin-right: .1rem
     }
 </style>

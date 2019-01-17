@@ -18,7 +18,7 @@
                 </div>
             </div>
         </div>
-        <!-- <Footer class="footer"></Footer>        -->
+        <!-- <Footer class="footer"></Footer> -->
     </div>
 
 </template>

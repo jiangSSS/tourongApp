@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="qaq">
         <vue-drawer-layout ref="drawerLayout" :reverse="true" @mask-click="handleMaskClick">
             <div class="drawer" slot="drawer">
                 <div class="text">
@@ -33,7 +33,7 @@
                             </div>
                             <div v-infinite-scroll="loadMore" infinite-scroll-disabled="loading">
                                 <div class="applyBox" v-for="(item,index) in pageList" :key="index">
-                                    <router-link :to="{path:'/activity/activityDetail',query:{id:item.id}}">
+                                    <router-link :to="{path:'/activityDetail',query:{id:item.id}}">
                                         <div class="imgWarp">
                                             <div class="imgBox">
                                                 <img :src="$url + item.imgPath" alt="" class="imgPath">
@@ -48,7 +48,7 @@
                                         <div class="applyDesc">
                                             <div class="applyTitle">{{item.title}}</div>
                                             <div class="company">
-                                                <span>主讲：</span>
+                                                <span>主办：</span>
                                                 <span>{{item.speaker}}</span>
                                             </div>
                                         </div>
@@ -67,12 +67,13 @@
                                                     <span>{{ item.regStartTimeStr.slice(0,10)}} 至 {{item.regEndTimeStr.slice(0,10)}}</span>
                                                 </div>
                                             </div>
-                                            <mt-button type="default" class="applyBtn flr" @click="submit">提交</mt-button>
+                                            <mt-button type="default" class="flr" :class="item.status == 1 ? 'applyBtn' : 'overBtn'" @click="$router.push({name:'activityDetail',query:{id:item.id}})">
+                                                {{item.status == 1 ? '我要报名' :'' + item.status == 0 ? '尚未开始':'' + item.status == 3 ? '活动结束' : ''}}查看往期
+                                            </mt-button>
                                         </div>
                                     </div>
                                 </div>
-                                <ToTop></ToTop>
-                                <!-- <vueToTop></vueToTop> -->
+                                <!-- <ToTop></ToTop> -->
                                 <div>
                                     <div class="noData" v-if="this.totalCount > this.pageList.length">加载中...</div>
                                     <div class="noData" v-else>--- 没有更多数据了 ---</div>
@@ -84,6 +85,9 @@
                 </div>
             </div>
         </vue-drawer-layout>
+        <!-- <a class="totop" id="totop" @click="goTop">
+            <img src="../../../static/app/img/backTop.png" alt="">
+        </a> -->
     </div>
 </template>
 
@@ -91,11 +95,13 @@
     import Header from "@/components/Header.vue"
     import Footer from "@/components/Bottom.vue"
     import ToTop from "@/components/toTop.vue"
+    import VueToTop from "vue-totop"
     export default {
         components: {
             Header,
             Footer,
-            ToTop
+            ToTop,
+            VueToTop
         },
         data() {
             return {
@@ -111,8 +117,8 @@
                 loading: false,
                 isLoading: false,
 
-                categorys: '',
-                statuss: '',
+                category: '',
+                status: '',
 
                 totalCount: [],
                 categoryList: [],
@@ -141,7 +147,7 @@
             loadMore() {
                 this.pn += 1
                 this.loading = true
-                this.$axios.get('/jsp/wap/trActivity/ctrl/jsonActivityPage.jsp', { params: { statuss: this.statuss, categorys: this.categorys, pageNumber: this.pn } }).then(res => {
+                this.$axios.get('/jsp/wap/trActivity/ctrl/jsonActivityPage.jsp', { params: { statuss: this.status, categorys: this.category, pageNumber: this.pn } }).then(res => {
                     if (res.success == "true") {
                         this.pageList = [...this.pageList, ...res.data.pageList]
                         this.totalCount = res.data.pagination.totalCount
@@ -150,9 +156,9 @@
                 })
             },
             // 活动列表
-            getActivityList(statuss, categorys) {
+            getActivityList(status, category) {
                 this.loading = true
-                this.$axios.get(`/jsp/wap/trActivity/ctrl/jsonActivityPage.jsp?`, { params: { statuss: statuss, categorys: this.categorys } }).then(res => {
+                this.$axios.get(`/jsp/wap/trActivity/ctrl/jsonActivityPage.jsp?`, { params: { statuss: this.status, categorys: this.category } }).then(res => {
                     console.log("活动列表", res)
                     if (res.success == "true") {
                         this.pageList = res.data.pageList
@@ -184,24 +190,24 @@
             },
             // 状态分类
             getStatus(e, index) {
-                this.statuss = e
+                this.status = e
                 if (this.statusList[index].checked) {
                     this.statusList[index].checked = !this.statusList[index].checked
-                    this.statuss = ''
+                    this.status = ''
                 } else {
                     this.statusList.forEach(item => {
                         item.checked = false
                     });
                     this.statusList[index].checked = true
                 }
-                this.getActivityList(this.statuss, this.categorys)
+                this.getActivityList(this.status, this.category)
             },
             // 筛选分类
             getCategory(e, index) {
-                this.categorys = e
+                this.category = e
                 if (this.categoryList[index].checked) {
                     this.categoryList[index].checked = !this.categoryList[index].checked
-                    this.categorys = ''
+                    this.category = ''
                 } else {
                     this.categoryList.forEach(item => {
                         item.checked = false
@@ -211,22 +217,42 @@
             },
             // 确定筛选
             handleSure() {
-                this.getActivityList(this.statuss, this.categorys)
+                this.getActivityList(this.status, this.category)
                 this.$refs.drawerLayout.toggle(false);
 
             },
             submit() {
                 alert("提交")
             },
-           
+            goTop() {
+                var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
+                // scrollTop = 0
+                console.log(scrollTop);
+
+                var load = document.getElementById("totop")
+                console.log(load.scrollTop)
+            }
         },
         created() {
-            this.getActivityList(this.statuss, this.categorys)
+            this.getActivityList(this.status, this.category)
             this.getTypeData()
-        }
+        },
+        // mounted() {
+        //     window.addEventListener('scroll', this.scrollToTop)
+        // },
+        // destroyed() {
+        //     window.removeEventListener('scroll', this.scrollToTop);
+        // },
     }
 </script>
 <style scoped lang="scss">
+    .totop {
+        position: fixed;
+        right: 0.8rem;
+        bottom: 1.5rem;
+        cursor: pointer;
+    }
+
     .detail {
         padding-top: .8rem;
         padding-bottom: 1.3rem;
@@ -336,11 +362,22 @@
         padding: 0 .2rem
     }
 
+    .overBtn {
+        background: #ccc;
+        color: #fff;
+        width: 1.8rem;
+        height: .7rem;
+        line-height: .7rem;
+        margin-right: .2rem;
+        margin-top: .13rem
+    }
+
     .applyBtn {
         background: #005982;
         color: #fff;
         width: 1.8rem;
         height: .7rem;
+        line-height: .7rem;
         margin-right: .2rem;
         margin-top: .13rem
     }
@@ -383,7 +420,7 @@
         color: #666;
         cursor: pointer;
         padding: .2rem 0;
-        margin: 0 .35rem;
+        margin: 0 .3rem;
         display: inline-block;
         display: fixed;
         justify-content: space-around
@@ -472,6 +509,4 @@
         line-height: 2;
         border-bottom: 1px dashed #fafafa;
     }
-
-    
 </style>

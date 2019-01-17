@@ -11,17 +11,22 @@
                         <div class="" v-for="(item,index) in pageList" :key="index">
                             <router-link :to="{path:'/newsDetail',query:{id:item.id}}">
                                 <div class="clearfix rows">
-                                 
-                                        <div class="nums clearfix flr">
-                                            <div class="clearfix" style="margin-top:.2rem">
-                                                <img src="../../../static/app/img/my/dian.jpg" class="dian fll">
-                                                <span class="fll messageTitle">{{item.title}}</span>
-                                                <span class="flr messageTime">{{item.addTimeStr.slice(0,10)}}</span>
-                                            </div>
-                                            <div class="newsDesc">
-                                                {{item.brief}}
-                                            </div>
+                                    <div class="nums clearfix flr">
+                                        <div class="clearfix titleBox">
+                                            <img src="../../../static/app/img/my/dian.jpg" class="dian fll">
+                                            <span class="fll messageTitle">{{item.title}}</span>
                                         </div>
+                                        <div class="messageTime">
+                                            <span class="fll timestatus">{{item.addTimeStr.slice(0,10)}}</span>
+                                            <span class="flr rightTime">
+                                                <span>(来源：
+                                                    <span>{{item.source}}</span> )</span>
+                                            </span>
+                                        </div>
+                                        <div class="newsDesc">
+                                            {{item.brief}}
+                                        </div>
+                                    </div>
                                     <div class="newsImgBox fll">
                                         <img :src="$url + item.imgPath" class="newsImg">
                                     </div>
@@ -51,8 +56,7 @@
 <script>
     import Header from "@/components/Header.vue";
     import Footer from "@/components/Bottom.vue";
-    import Swiper from "swiper"
-
+    import Swiper from "swiper";
 
     export default {
         components: {
@@ -84,6 +88,7 @@
                             this.pageList = [...this.pageList, ...res.data.pageList];
                             this.totalCount = res.data.pagination.totalCount;
                             this.loading = false;
+                      
                         }
                     });
             },
@@ -137,27 +142,27 @@
                         });
                         typeDataList.forEach(item => {
                             if (item.dataValue == this.category) {
-                                item.checked = true
+                                item.checked = true;
                             }
-                        })
+                        });
                         this.typeDataList = typeDataList;
                     }
                 });
             },
             getSwiper() {
-                var swiper = new Swiper('.swiper-container', {
-                    slidesPerView: 'auto',
+                var swiper = new Swiper(".swiper-container", {
+                    slidesPerView: "auto",
                     freeMode: true,
                     observer: true,
                     slidesOffsetAfter: 15,
                     roundLengths: true
-                })
+                });
             }
         },
         created() {
             this.getNewsList(this.categorys);
             this.getTypeData();
-            this.getSwiper()
+            this.getSwiper();
         }
     };
 </script>
@@ -178,8 +183,12 @@
         // background: #fff
         padding: 0;
     }
-    .nums{
-        width: 4.5rem
+
+    .nums {
+        width: 4.5rem;
+    }
+    .titleBox{
+        margin-top: .1rem
     }
 
     .newsDesc {
@@ -188,11 +197,10 @@
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         width: 4.2rem;
-        font-size: .2rem;
-        margin-top: .1rem;
+        font-size: 0.2rem;
     }
 
     .subTab {
@@ -217,25 +225,38 @@
 
     .rows {
         padding: 0.1rem 0.3rem;
-        border-bottom: .2rem solid #fafafa;
+        border-bottom: 0.2rem solid #fafafa;
         .messageTitle {
             font-size: 0.24rem;
             font-family: "Microsoft YaHei";
             color: rgb(51, 51, 51);
             overflow: hidden;
-            white-space: nowrap;
             text-overflow: ellipsis;
-            width: 2.4rem;
-            line-height: 2
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            width: 80%;
+            /* line-height: 2; */
         }
         .messageTime {
             font-size: 0.2rem;
             font-family: "Microsoft YaHei";
             color: rgb(137, 137, 137);
-            line-height: 2
+            line-height: 2;
+        }
+        .messageTime span {
+            font-size: .2rem
+        }
+        .timestatus {
+            margin-left: .3rem
+        }
+        .rightTime {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 2.4rem
         }
     }
-
     .dian {
         margin: 0.15rem;
     }
@@ -245,18 +266,18 @@
         // justify-content: space-between;
         padding-top: 0.15rem;
         .newsImg {
-            width: 2.2rem;
-            height: 2rem;
+            width: 2.25rem;
+            height: 1.5rem;
         }
     }
 
     .type_item {
         color: #666;
         cursor: pointer;
-        padding: 0.2rem 0 .1rem;
-        margin: 0 .2rem;
+        padding: 0.2rem 0 0.1rem;
+        margin: 0 .3rem;
         line-height: 2;
-        font-size: .24rem;
+        font-size: .3rem;
         display: inline-block;
         /* display: fixed;
         justify-content: space-around; */

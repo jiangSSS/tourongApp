@@ -64,12 +64,12 @@
                 <div class="text">
                     <div class="index">
                         <div class="header clearfix">
-                            <div class="flr" @click="$router.push('/issueProject')">
+                            <div class="flr" @click="sendProject">
                                 <button class="sendMoney">发布项目</button>
                             </div>
                             <div class="search fll">
-                                <input type="text" placeholder="请输入内容" class="input_search" />
-                                <i class="iconfont icon-sousuo1"></i>
+                                <input type="text" placeholder="请输入内容" v-model="title" class="input_search" />
+                                <i class="iconfont icon-sousuo1" @click="search"></i>
                             </div>
                         </div>
                         <div class="detail">
@@ -95,11 +95,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <!-- <div>
                                     <div class="noData" v-if="this.totalCount > this.pageList.length">加载中...</div>
                                     <div class="noData" v-else>--- 没有更多数据了 ---</div>
-                                </div>
+                                </div> -->
                             </div>
+                            <div class="noData">--- 没有更多数据了 ---</div>
                         </div>
                         <Footer class="footer"></Footer>
                     </div>
@@ -115,6 +116,7 @@
     import Footer from "@/components/Bottom.vue";
     // import Choose from "@/views/projectA/choose.vue";
     import { Dialog } from "vant";
+    import * as Cookies from 'js-cookie'
     export default {
         components: {
             Footer,
@@ -150,6 +152,8 @@
                 financingWays: "",
                 financingMoneys: "",
 
+                title: ""
+
             };
         },
         methods: {
@@ -157,7 +161,10 @@
                 Dialog.alert({
                     message: "提交成功，平台会尽快为你安排。"
                 }).then(() => {
-                    // on close
+                    let id = this.$route.query.id
+                    this.$axios.get(`/jsp/wap/trProject/do/doBespoke.jsp?id=${id}`).then(res=>{
+                        console.log("约见项目方",res)
+                    })
                 });
             },
             // 打开筛选
@@ -207,7 +214,6 @@
                 }).then(res => {
                     console.log("项目列表", res)
                     if (res.success == "true") {
-
                         this.pageList = res.data.pageList
                         this.totalCount = res.data.pagination.totalCount
                         this.pn = 1
@@ -314,6 +320,27 @@
                 this.getProjectList(this.financingMoneys, this.financingWays, this.industrys, this.regions)
                 // 关闭筛选
                 this.$refs.drawerLayout.toggle(false);
+            },
+            // 搜索
+            search() {
+                this.loading = true;
+                this.$axios.get("/jsp/wap/trProject/ctrl/jsonProjectPage.jsp", {
+                    params: { financingWays: this.financingWays, regions: this.regions, industrys: this.industrys, financingMoneys: this.financingMoneys, title: this.title }
+                }).then(res => {
+                    if (res.success == "true") {
+                        this.pageList = res.data.pageList;
+                        this.totalCount = res.data.pagination.totalCount;
+                        this.pn = 1;
+                        this.loading = false;
+                    }
+                });
+            },
+            sendProject(){
+                if (Cookies.get('userKey')) {
+                    this.$router.push('/issueProject')
+                } else {
+                    this.$router.push('/login')
+                }
             }
         },
         created() {
@@ -326,14 +353,22 @@
     .detail {
         padding-bottom: 1.2rem; // background: #fafafa;
     }
-    .buttonCheck{
+
+    .buttonCheck {
         outline: none;
         border: 0
     }
+    .Area{
+        background: #fff;
+        border: 0;
+        color: #666
+    }
+
     .like {
         background: #005982;
         color: #fff
     }
+
     .header {
         background: #fff !important;
     }

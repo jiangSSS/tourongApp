@@ -5,11 +5,11 @@ import home from '@/views/home'
 
 Vue.use(Router)
 
-export default new Router({
-  routes: [  
+const router = new Router({
+  routes: [
     {
-      path:"/",
-      redirect:"/home"
+      path: "/",
+      redirect: "/home"
     },
     {
       path: '/home',
@@ -20,164 +20,189 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: () => import("@/views/login/login.vue"),
-      meta:{
-        title:"登录"
+      meta: {
+        title: "登录"
       }
     },
     {
       path: '/projectA',
       name: 'projectA',
       component: () => import("@/views/projectA/index.vue"),
-      meta:{
-        title:"融资项目",
-        keepAlive:true
+      meta: {
+        title: "融资项目",
+        keepAlive: true
       }
     },
     {
       path: '/news',
       name: 'news',
       component: () => import("@/views/news/index.vue"),
-      meta:{
-        title:"资讯列表",
-        keepAlive:true
-      }
-    },
-    {
-      path: '/comments',
-      name: 'comments',
-      component: () => import("@/views/news/comments.vue"),
-      meta:{
-        title:"发表评论"
-      }
-    },
-    {
-      path: '/project',
-      name: 'project',
-      component: () => import("@/views/project/index.vue"),
-      meta:{
-        title:"项目介绍"
-      }
-    },
-    {
-      path: '/issueProject',
-      name: 'issueProject',
-      component: () => import("@/views/projectA/issueProject.vue"),
-      meta:{
-        title:"发布项目"
-      }
-    },
-    {
-      path: '/issueMoney',
-      name: 'issueMoney',
-      component: () => import("@/views/money/issueMoney.vue"),
-      meta:{
-        title:"发布资金"
-      }
-    },
-    {
-      path: '/message',
-      name: 'message',
-      component: () => import("@/views/message/index.vue"),
-      meta:{
-        title:"我的消息"
+      meta: {
+        title: "资讯列表",
+        keepAlive: true
       }
     },
     {
       path: '/money',
       name: 'money',
       component: () => import("@/views/money/index.vue"),
-      meta:{
-        title:"投资信息列表",
-        keepAlive:true
+      meta: {
+        title: "投资信息列表",
+        keepAlive: true
       },
+    },
+    {
+      path: '/activity',
+      name: 'activity',
+      component: () => import("@/views/activity/index.vue"),
+      meta: {
+        title: "会议活动",
+        keepAlive: true
+      }
+    },
+    {
+      path: '/actComments',
+      name: 'actComments',
+      component: () => import("@/views/activity/comments.vue"),
+      meta: {
+        title: "发表评论",
+      }
+    },
+    {
+      path: '/activityComments',
+      name: 'activityComments',
+      component: () => import("@/views/activity/activityComment.vue"),
+      meta: {
+        title: "评论列表",
+      }
+    },
+    {
+      path: '/projectA/detail',
+      name: 'projectDetail',
+      component: () => import("@/views/projectA/projectDetail.vue"),
+      meta: {
+        title: "项目详情",
+      }
+    },
+
+    {
+      path: '/comments',
+      name: 'comments',
+      component: () => import("@/views/news/comments.vue"),
+      meta: {
+        title: "发表评论"
+      }
+    },
+    {
+      path: '/project',
+      name: 'project',
+      component: () => import("@/views/project/index.vue"),
+      meta: {
+        title: "项目介绍"
+      }
+    },
+    {
+      path: '/issueProject',
+      name: 'issueProject',
+      component: () => import("@/views/projectA/issueProject.vue"),
+      meta: {
+        title: "发布项目"
+      }
+    },
+    {
+      path: '/issueMoney',
+      name: 'issueMoney',
+      component: () => import("@/views/money/issueMoney.vue"),
+      meta: {
+        title: "发布资金"
+      }
+    },
+    {
+      path: '/message',
+      name: 'message',
+      component: () => import("@/views/message/index.vue"),
+      meta: {
+        title: "我的消息"
+      }
     },
     {
       path: '/money/moneyDetail',
       name: 'moneyDetail',
       component: () => import("@/views/money/moneyDetail.vue"),
-      meta:{
-        title:"投资信息详情"
+      meta: {
+        title: "投资信息详情"
       }
     },
     {
       path: '/money/progress',
       name: 'progress',
       component: () => import("@/views/money/progress.vue"),
-      meta:{
-        title:"项目进展"
+      meta: {
+        title: "项目进展"
       }
     },
     {
       path: '/investors',
       name: 'investors',
       component: () => import("@/views/invest/investors.vue"),
-      meta:{
-        title:"投资人详情"
+      meta: {
+        title: "投资人详情"
       }
     },
     {
       path: '/my',
       name: 'my',
       component: () => import("@/views/my/index.vue"),
-      meta:{
-        title:"个人中心"
+      meta: {
+        title: "个人中心"
       }
     },
     {
       path: '/vip',
       name: 'vip',
       component: () => import("@/views/my/vip.vue"),
-      meta:{
-        title:"vip服务介绍"
+      meta: {
+        title: "vip服务介绍"
       }
     },
     {
-      path: '/activity',
-      name: 'activity',
-      component: () => import("@/views/activity/index.vue"),
-      meta:{
-        title:"会议活动",
-        keepAlive:true
-      }
-    },
-    {
-      path: '/activity/activityDetail',
+      path: '/activityDetail',
       name: 'activityDetail',
       component: () => import("@/views/activity/activityDetail.vue"),
-      meta:{
-        title:"活动详情"
+      meta: {
+        title: "活动详情"
       }
     },
     {
       path: '/newsDetail',
       name: 'newsDetail',
       component: () => import("@/views/news/newsDetail.vue"),
-      meta:{
-        title:"资讯详情"
+      meta: {
+        title: "资讯详情"
       }
     },
     {
       path: '/newsDetail1',
       name: 'newsDetail1',
       component: () => import("@/views/news/newsDetail1.vue"),
-      meta:{
-        title:"资讯详情"
+      meta: {
+        title: "资讯详情"
       }
     },
     {
-      path: '/activityDetail/comment',
+      path: '/news/newsComment',
       name: 'comment',
-      component: () => import("@/views/activity/commentDetail.vue"),
-      meta:{
-        title:"评论列表"
+      component: () => import("@/views/news/newsComment.vue"),
+      meta: {
+        title: "评论列表"
       }
     },
     {
       path: '/sendProject',
       name: 'sendProject',
       component: () => import("@/views/money/sendProject.vue"),
-      meta:{
-        title:"投递项目"
+      meta: {
+        title: "投递项目"
       }
     },
     {
@@ -207,10 +232,37 @@ export default new Router({
     {
       path: "/myFocus",
       name: "myFocus",
-      component: () => import("@/views/my/myFocus.vue"),
+      redirect: "/myFocus/focusProject",
+      component: () => import("@/views/my/myFocus/index.vue"),
       meta: {
         title: "我的关注"
-      }
+      },
+      children: [
+        {
+          path: "focusMoney",
+          name: "focusMoney",
+          component: () => import("@/views/my/myFocus/focusMoney.vue"),
+          meta: {
+            title: "我的关注"
+          },
+        },
+        {
+          path: "focusProject",
+          name: "focusProject",
+          component: () => import("@/views/my/myFocus/focusProject.vue"),
+          meta: {
+            title: "我的关注"
+          },
+        },
+        {
+          path: "label",
+          name: "label",
+          component: () => import("@/views//my/myFocus/label.vue"),
+          meta: {
+            title: "我的关注"
+          },
+        }
+      ]
     },
     {
       path: "/myProject",
@@ -259,7 +311,7 @@ export default new Router({
       meta: {
         title: "在线客服"
       }
-    },  
+    },
     {
       path: "/userInfo",
       name: "userInfo",
@@ -267,6 +319,30 @@ export default new Router({
       meta: {
         title: "会员信息"
       }
-    },  
-  ]
+    },
+    {
+      path: "/search",
+      name: "search",
+      component: () => import("@/views/search/index.vue"),
+    },
+  ],
 })
+router.afterEach((to, from, next) => {
+  window.scrollTo(0, 0);
+});
+router.beforeEach((to, from, next) => {
+  const toDepth = to.path.split('/').length
+  const fromDepth = from.path.split('/').length
+  if (toDepth < fromDepth) {
+    console.log("back")
+    from.meta.keepAlive = false
+    to.meta.keepAlive = true
+  }
+  next()
+})
+// router.beforeEach((to, from, next) => {
+//   window.document.title = to.meta.title;
+//   next()
+// })
+export default router
+
