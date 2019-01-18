@@ -157,16 +157,33 @@
             };
         },
         methods: {
-            handleCustomer() {
+            handleCustomer(id) {
                 Dialog.alert({
                     message: "提交成功，平台会尽快为你安排。"
                 }).then(() => {
                     let id = this.$route.query.id
-                    this.$axios.get(`/jsp/wap/trProject/do/doBespoke.jsp?id=${id}`).then(res=>{
-                        console.log("约见项目方",res)
+                    this.$axios.get(`/jsp/wap/trProject/do/doBespoke.jsp?id=${id}`).then(res => {
+                        console.log("约见项目方", res)
                     })
                 });
             },
+
+            // handleCustomer(id) {
+            //     if (Cookies.get("userKey")) {
+            //         if (this.myMoney.length == 0) {
+            //             this.success = false;
+            //             this.hint = "您还没有发布资金，请先发布资金";
+            //             this.toast_show = true;
+            //         } else {
+            //             this.dialogFormVisible = true;
+            //             this.projectId = id;
+            //         }
+            //     } else {
+            //         this.success = false;
+            //         this.hint = "您未登录，请先登录";
+            //         this.toast_show = false;
+            //     }
+            // },
             // 打开筛选
             handleToggleDrawer() {
                 this.$refs.drawerLayout.toggle();
@@ -335,7 +352,7 @@
                     }
                 });
             },
-            sendProject(){
+            sendProject() {
                 if (Cookies.get('userKey')) {
                     this.$router.push('/issueProject')
                 } else {
@@ -358,7 +375,8 @@
         outline: none;
         border: 0
     }
-    .Area{
+
+    .Area {
         background: #fff;
         border: 0;
         color: #666
@@ -422,6 +440,11 @@
         font-weight: bold;
         line-height: 1;
         text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
 
     .projectDetail {

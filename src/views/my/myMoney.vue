@@ -1,7 +1,7 @@
 <template>
     <div>
         <Header></Header>
-        <div class="">
+        <div class="detail">
             <!-- <mu-container class="subTabs">
                 <mu-tabs :value.sync="active2" inverse color="#005982" indicator-color="#005982" full-width>
                     <mu-tab>全部</mu-tab>
@@ -99,7 +99,7 @@
 
 <script>
     import Header from "@/components/Header.vue";
-    import { MessageBox } from 'mint-ui';
+    import { MessageBox,Toast} from 'mint-ui';
     export default {
         components: {
             Header,
@@ -192,6 +192,9 @@
         padding: 0.8rem 0 0 0;
         width: 7.5rem !important;
         min-width: 7.5rem !important;
+    }
+    .detail{
+        margin-top: .9rem
     }
 
     .textContent {

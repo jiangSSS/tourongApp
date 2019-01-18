@@ -125,6 +125,14 @@
             cancelBtn(index) {
                 this.projectData.splice(index, 1)
             },
+            getData(){
+                this.$axios.get(`/jsp/wap/center/ctrl/jsonIndustry.jsp`).then(res=>{
+                    console.log("行业列表",res)
+                })
+            }
+        },
+        created(){
+            this.getData()
         }
     }
 </script>

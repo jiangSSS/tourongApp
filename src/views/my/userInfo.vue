@@ -16,7 +16,7 @@
             <div class="clearfix rows">
                 <div class="fll">账号</div>
                 <div class="flr" style="height: .5rem;">
-                    <input type="text" v-model="formData.userName" :disabled="true">
+                    <input type="text" v-model="formData.mobile" :disabled="true">
                 </div>
             </div>
             <div class="clearfix rows">
@@ -69,6 +69,7 @@
             </div>
             <div class="clearfix rows">
                 <div class="fll">所在地区</div>
+                <span class="areaa"> {{province}},{{city}}, {{county}}</span>
                 <button class="Area flr" @click="show = true">请选择
                     <i class="iconfont icon-xiangyou"></i>
                 </button>
@@ -3911,6 +3912,9 @@
                     countyId: "",
                     birthdayTimeStr: ""
                 },
+                city:"",
+                province:"",
+                county:""
             }
         },
         methods: {
@@ -3939,8 +3943,14 @@
             onCancel() {
                 this.show = false
             },
-            onConfirm() {
+            onConfirm(ele) {
                 this.show = false
+                this.formData.provinceId = ele[0].code;
+                this.formData.cityId = ele[1].code;
+                this.formData.countyId = ele[2].code;
+                this.city = ele[1].name
+                this.province = ele[0].name
+                this.county = ele[2].name
             },
             onChange() {
             },
@@ -3954,31 +3964,9 @@
                     this.formData.authenticationName = this.$store.state.userinfo.authenticationName;
                     this.formData.email = this.$store.state.userinfo.email;
                     if (this.$store.state.userinfo.provinceStr != "") {
-                        this.provinceStr = this.$store.state.userinfo.provinceStr;
-                        if (
-                            this.provinceStr == "北京市" &&
-                            this.$store.state.userinfo.cityStr == "市辖区"
-                        ) {
-                            this.cityStr = "北京城区";
-                        } else if (
-                            this.provinceStr == "天津市" &&
-                            this.$store.state.userinfo.cityStr == "市辖区"
-                        ) {
-                            this.cityStr = "天津城区";
-                        } else if (
-                            this.provinceStr == "上海市" &&
-                            this.$store.state.userinfo.cityStr == "市辖区"
-                        ) {
-                            this.cityStr = "上海城区";
-                        } else if (
-                            this.provinceStr == "重庆市" &&
-                            this.$store.state.userinfo.cityStr == "市辖区"
-                        ) {
-                            this.cityStr = "重庆城区";
-                        } else {
-                            this.cityStr = this.$store.state.userinfo.cityStr;
-                        }
-                        this.countyStr = this.$store.state.userinfo.countyStr;
+                        this.province = this.$store.state.userinfo.provinceStr;  
+                        this.city = this.$store.state.userinfo.cityStr;
+                        this.county = this.$store.state.userinfo.countyStr;
                     }
                     this.formData.sex = this.$store.state.userinfo.sex;
                     if (this.$store.state.userinfo.birthdayTimeStr != "") {
@@ -4080,7 +4068,9 @@
     /* .container {
         width: 100%
     } */
-
+    .areaa{
+        margin-left: .2rem
+    }
     .go {
         color: #005982;
     }

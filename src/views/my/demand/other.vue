@@ -1,6 +1,6 @@
 <template>
   <div class="all">
-    <Header></Header>
+    <!-- <Header></Header> -->
     <div class="container_warp">
       <textarea class="textarea" placeholder="请详细填写你的需求" v-model="content" name="" id="" cols="30" rows="10"></textarea>
       <mt-button type="default" class="submit" @click="submit">提交</mt-button>

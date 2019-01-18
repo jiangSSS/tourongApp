@@ -100,7 +100,7 @@
 
                     <div class="fll">查看项目进展</div>
                     <div class="flr">
-                        <i class="iconfont icon-xiangyou"></i>
+                        <i class="iconfont icon-xiangyou" ></i>
                     </div>
 
                 </div>

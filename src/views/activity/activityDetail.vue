@@ -30,11 +30,17 @@
             </div>
         </div>
         <div class="footer">
-            <div v-if="good" @click="isGood"><i class="iconfont icon-dianzan" style="color:#f00"></i><span>{{activityDetail.greatNum}}</span></div>
-            <div v-else @click="noGood"><i class="iconfont icon-dianzan"></i><span>{{activityDetail.greatNum}}</span></div>
-            <div @click="$router.push('/activityComments')">
+            <div v-if="good" @click="isGood">
+                <i class="iconfont icon-dianzan" style="color:#f00"></i>
+                <span>{{activityDetail.greatNum}}</span>
+            </div>
+            <div v-else @click="noGood">
+                <i class="iconfont icon-dianzan"></i>
+                <span>{{activityDetail.greatNum}}</span>
+            </div>
+            <div @click="$router.push({name:'activityComments',query:{id}})">
                 <i class="iconfont icon-weibiaoti-"></i>
-                <span>{{commentList.totalCount}}</span>
+                <span>{{countComment}}</span>
             </div>
             <div>
                 <i class="iconfont icon-share"></i>
@@ -71,6 +77,7 @@
     import Header from "@/components/Header.vue"
     import Footer from "@/components/Bottom.vue"
     import { Toast } from 'mint-ui'
+    import * as Cookies from 'js-cookie'
 
     export default {
         components: {
@@ -82,7 +89,7 @@
             return {
                 isShowApply: false,
                 activityDetail: [],
-                commentList:[],
+                commentList: [],
                 // isShowApply:true,
                 formData: {
                     // activityId: "",
@@ -91,7 +98,8 @@
                     memberMobile: ""
                 },
                 good: 0,
-                id: ""
+                id: "",
+                countComment: ""
             }
         },
         methods: {
@@ -139,6 +147,16 @@
                 this.$axios.get(`/jsp/wap/trActivity/ctrl/jsonActivityDetail.jsp?id=${this.id}`).then(res => {
                     console.log("111", res)
                     this.activityDetail = res.data
+                    this.activityDetail.greatNum = Number(res.data.greatNum)
+                    if (Cookies.get('userKey') && this.$store.state.userinfo.headImgPath != '') {
+                        this.avatar = this.$store.state.userinfo.headImgPath
+                    }
+                    if (Cookies.get('userKey') && this.$store.state.userinfo.name != '') {
+                        this.memberName = this.$store.state.userinfo.name
+                    }
+                    if (Cookies.get('userKey') && this.$store.state.userinfo.provinceStr != '') {
+                        this.provinceStr = this.$store.state.userinfo.provinceStr
+                    }
                 })
             },
             // 是否点赞
@@ -151,7 +169,7 @@
             // 点赞
             noGood() {
                 this.$axios.get(`/jsp/wap/trActivity/do/doGreat.jsp?id=${this.id}`).then(res => {
-                    console.log("点赞成功",res)
+                    console.log("点赞成功", res)
                     if (res.success == "true") {
                         let instance = Toast('点赞成功');
                         setTimeout(() => {
@@ -165,7 +183,7 @@
             // 取消点赞
             isGood() {
                 this.$axios.get(`/jsp/wap/trActivity/do/cancelGreat.jsp?id=${this.id}`).then(res => {
-                    console.log("取消点赞",res)
+                    console.log("取消点赞", res)
                     if (res.success == "true") {
                         let instance = Toast('已取消点赞');
                         setTimeout(() => {
@@ -177,11 +195,17 @@
                 })
             },
             // 评论列表
-
+            getComment() {
+                this.id = this.$route.query.id
+                this.$axios.get(`/jsp/wap/trActivity/ctrl/jsonCommentPage.jsp?id=${this.id}`).then(res => {
+                    this.countComment = Number(res.data.pagination.totalCount)
+                })
+            }
         },
         created() {
             this.getActivityDetail()
             this.getGood()
+            this.getComment()
         }
     }
 </script>

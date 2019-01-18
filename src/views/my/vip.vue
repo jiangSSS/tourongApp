@@ -5,7 +5,7 @@
             <div class="detail">
                 <div class="bg">
                     <div id="vip">
-                        <img src="/static/img/vip.jpg" alt="">
+                        <img src="../../../static/app/img/vip.jpg" alt="">
                         <div class="a">1</div>
                         <div class="title">投融连线</div>
                         <div class="content">可以帮助会员实现价值</div>
@@ -39,15 +39,15 @@
             return {
                 vipList: [
                     {
-                        img: "/static/img/vip1.jpg",
+                        img: "../../../static/app/img/vip1.jpg",
                         desc: "系统能力、全球视野"
                     },
                     {
-                        img: "/static/img/vip1.jpg",
+                        img: "../../../static/app/img/vip1.jpg",
                         desc: "更多机会、更多选择"
                     },
                     {
-                        img: "/static/img/vip1.jpg",
+                        img: "../../../static/app/img/vip1.jpg",
                         desc: "更高效率、更省成本"
                     },
                 ]

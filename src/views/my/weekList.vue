@@ -5,8 +5,8 @@
             <div class="detail">
                 <div class="week">
                     <img src="../../../static/app/img/my/week.jpg" class="headers">
-                    <span class="num">第2期</span>
-                    <span class="numbers">2018年第2期</span>
+                    <span class="num">第4期</span>
+                    <span class="numbers">2018年第4期</span>
                     <span class="nowTime">2018--11--11</span>
                 </div>
                 <div class="weekTitle">
@@ -14,19 +14,19 @@
                         往期回顾
                     </div>
                 </div>
-                <div class="weekList" v-for="(item,index) in weekList" :key="index">
+                <div class="weekList" v-for="(item,index) in weekLists" :key="index">
                     <div class="clearfix rows">
-                        <img src="../../../static/app/img/my/dian.jpg" class="dian fll">
-                        <div class="nums fll">
-                            <span class="">{{item.timeYear}}年第{{item.timeNum}}期</span>
-                            <span class="">{{item.time}}</span>
-                        </div>
-                        
+                        <router-link :to="{name:'weekDetail'}" >
+                            <img src="../../../static/app/img/my/dian.jpg" class="dian fll">
+                            <div class="nums fll">
+                                <span class="">{{item.addTimeStr.slice(0,4)}}年第{{item.id}}期</span>
+                                <span class="">{{item.addTimeStr.slice(0,10)}}</span>
+                            </div>
+                        </router-link>
                     </div>
                 </div>
             </div>
         </div>
-
         <Footer class="footer"></Footer>
     </div>
 
@@ -48,68 +48,21 @@
                         timeNum: "10",
                         time: "2018-01-01"
                     },
-                    {
-                        timeYear: "2018",
-                        timeNum: "9",
-                        time: "2018-01-01"
-                    },
-                    {
-                        timeYear: "2018",
-                        timeNum: "8",
-                        time: "2018-01-01"
-                    },
-                    {
-                        timeYear: "2018",
-                        timeNum: "7",
-                        time: "2018-01-01"
-                    },
-                    {
-                        timeYear: "2018",
-                        timeNum: "7",
-                        time: "2018-01-01"
-                    },{
-                        timeYear: "2018",
-                        timeNum: "7",
-                        time: "2018-01-01"
-                    },{
-                        timeYear: "2018",
-                        timeNum: "7",
-                        time: "2018-01-01"
-                    },{
-                        timeYear: "2018",
-                        timeNum: "7",
-                        time: "2018-01-01"
-                    },{
-                        timeYear: "2018",
-                        timeNum: "7",
-                        time: "2018-01-01"
-                    },{
-                        timeYear: "2018",
-                        timeNum: "7",
-                        time: "2018-01-01"
-                    },{
-                        timeYear: "2018",
-                        timeNum: "7",
-                        time: "2018-01-01"
-                    },{
-                        timeYear: "2018",
-                        timeNum: "7",
-                        time: "2018-01-01"
-                    },{
-                        timeYear: "2018",
-                        timeNum: "7",
-                        time: "2018-01-01"
-                    },{
-                        timeYear: "2018",
-                        timeNum: "7",
-                        time: "2018-01-01"
-                    },{
-                        timeYear: "2018",
-                        timeNum: "7",
-                        time: "2018-01-01"
-                    },
-                ]
+
+                ],
+                weekLists: []
             }
+        },
+        methods: {
+            getData() {
+                this.$axios.get(`/jsp/wap/center/ctrl/jsonWeeklyList.jsp`).then(res => {
+                    console.log("周报列表", res)
+                    this.weekLists = res.data.pageList
+                })
+            }
+        },
+        created() {
+            this.getData()
         }
     }
 </script>
@@ -126,9 +79,7 @@
         width: 100%
     }
 
-    .headers {
-        
-    }
+    .headers {}
 
     ;
     .num {
@@ -138,24 +89,27 @@
         top: .55rem;
         left: .6rem
     }
-    .numbers{
+
+    .numbers {
         font-size: .32rem;
         font-family: "PingFang";
-        color: rgb( 193, 171, 114 );
+        color: rgb( 193, 171, 114);
         font-weight: bold;
-        position: absolute;    
+        position: absolute;
         top: 1.5rem;
         left: .8rem
     }
-    .nowTime{     
+
+    .nowTime {
         font-size: .28rem;
         font-family: "PingFang";
-        color: rgb( 193, 171, 114 );
+        color: rgb( 193, 171, 114);
         line-height: 0.565;
         position: absolute;
         top: 2.4rem;
         left: .8rem
     }
+
     .week {
         position: relative;
         width: 95%;
@@ -181,12 +135,12 @@
     }
 
     .weekList .rows {
-        padding: .1rem .2rem;
-        // border-bottom: 1px solid #f3f5f7;
+        padding: .1rem .2rem; // border-bottom: 1px solid #f3f5f7;
         font-family: "PingFang";
         color: rgb( 153, 153, 153);
     }
-    .nums{
+
+    .nums {
         // display: inline-block;
         line-height: 2.8;
         border-bottom: 1px solid #f3f5f7;
@@ -194,10 +148,12 @@
         justify-content: space-between;
         width: 90%
     }
-    .nums span:nth-child(1){
+
+    .nums span:nth-child(1) {
         color: #333
-    }   
-    .nums span:nth-child(2){
+    }
+
+    .nums span:nth-child(2) {
         color: #999
     }
 </style>

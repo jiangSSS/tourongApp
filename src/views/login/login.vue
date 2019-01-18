@@ -44,7 +44,7 @@
                                 <div class="pwd">验证码</div>
                                 <div class="clearfix code">
                                     <input v-model="registerData.code" class="login_input fll" type="text" placeholder="请输入验证码">
-                                    <span v-show="code_show" @click="getCode" class="gain">获取验证码</span>
+                                    <span v-show="code_show" @click="getCode(registerData.mobile)" class="gain">获取验证码</span>
                                     <span v-show="!code_show" class="gain">{{count}}s</span>
                                 </div>
                                 <div class="pwd">邮箱</div>
@@ -59,7 +59,7 @@
                                     <div class="fll">
                                         <input type="checkbox" v-model="register_checked" class="checkBox">
                                         <span class="loginDesc">我已阅读并同意
-                                            <a href="">《投融资讯平台服务协议》</a>
+                                            <a @click="$router.push('/agreement')">《投融资讯平台服务协议》</a>
                                         </span>
                                     </div>
                                 </div>
@@ -75,28 +75,27 @@
                             <span class="tel">手机号码</span>
                         </div>
                         <div>
-                            <input class="login_input" type="text" v-model="findPwd.mobile" placeholder="请输入正确的手机号">
+                            <input class="login_input" type="text" v-model="forgetData.mobile" placeholder="请输入正确的手机号">
                         </div>
                         <div class="pwd">验证码</div>
                         <div class="clearfix code">
-                            <input v-model="findPwd.code" class="login_input fll" type="text" placeholder="请输入验证码">
-                            <span v-show="code_show" @click="getCode" class="gain">获取验证码</span>
+                            <input v-model="forgetData.code" class="login_input fll" type="text" placeholder="请输入验证码">
+                            <span v-show="code_show" @click="getCode(forgetData.mobile)" class="gain">获取验证码</span>
                             <span v-show="!code_show" class="gain">{{count}}s</span>
                         </div>
                         <div class="pwd">新密码</div>
                         <div>
-                            <input v-model="findPwd.newPwd" class="login_input" type="password" placeholder="设置新密码" @keyup.enter="handleReg">
+                            <input v-model="forgetData.newPwd" class="login_input" type="password" placeholder="设置新密码" @keyup.enter="handleReg">
                         </div>
                         <div class="pwd">确认密码</div>
                         <div>
-                            <input v-model="findPwd.reNewPwd" class="login_input" type="password" placeholder="确认新密码" @keyup.enter="handleReg">
+                            <input v-model="forgetData.reNewPwd" class="login_input" type="password" placeholder="确认新密码" @keyup.enter="handleReg">
                         </div>
                         <mt-button type="default" class="loginBtn" @click="handleFindPwd">提交</mt-button>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -130,7 +129,7 @@
                     pwd: "",
                     email: ""
                 },
-                findPwd: {
+                forgetData: {
                     mobile: "",
                     code: "",
                     newPwd: "",
@@ -138,11 +137,12 @@
                 },
                 count: '',
                 timer: null,
+                hint: ""
             };
         },
         methods: {
             // 获取验证码
-            getCode() {
+            getCode(mobile) {
                 const TIME_COUNT = 60;
                 if (!this.timer) {
                     this.count = TIME_COUNT;
@@ -155,9 +155,9 @@
                             clearInterval(this.timer);
                             this.timer = null;
                         }
-                    }, 1000)
+                    }, 1000);
                 }
-                this.$axios.get('/jsp/common/baseUser/ctrl/ajaxSendMobileValidCode.jsp', { params: { mobile: this.registerData.mobile } }).then(res => {
+                this.$axios.get("/jsp/common/baseUser/ctrl/ajaxSendMobileValidCode.jsp", { params: { mobile } }).then(res => {
                     if (res.success == "true") {
                         let instance = Toast('发送成功');
                         setTimeout(() => {
@@ -169,7 +169,7 @@
                             instance.close();
                         }, 2000);
                     }
-                })
+                });
             },
             // 登录
             handleLogin() {
@@ -181,7 +181,7 @@
                         } else {
                             Cookies.set("userKey", res.data, { expires: 3 })
                         }
-                        let instance = Toast('登录成功');
+                        let instance = Toast(res.message);
                         setTimeout(() => {
                             instance.close();
                         }, 2000);
@@ -189,7 +189,7 @@
                             this.$router.push({ name: "home" })
                         }, 2000);
                     } else {
-                        let instance = Toast('账号或密码错误');
+                        let instance = Toast(res.message);
                         setTimeout(() => {
                             instance.close();
                         }, 2000);
@@ -197,47 +197,6 @@
                 })
             },
             // 注册
-            handleReg() {
-                if (this.registerData.code != '') {
-                    this.$axios.get('/jsp/wap/login/do/doRegister.jsp', { params: { code: this.registerData.code, mobile: this.registerData.mobile, pwd: this.registerData.pwd, email_: this.registerData.email } }).then(res => {
-                        let instance = Toast('注册成功');
-                        setTimeout(() => {
-                            instance.close();
-                        }, 2000);
-                        if (this.login_checked) {
-                            Cookies.set("userKey", res.data, { expires: 14 });
-                        } else {
-                            Cookies.set("userKey", res.data, { expires: 3 });
-                        }
-                        if (res.success == "true") {
-                            this.$axios.post('/jsp/wap/login/do/doLogin.jsp', qs.stringify({ mobile: this.registerData.mobile, pwd: this.registerData.pwd, loginType: this.loginData.loginType })).then(res => {
-                                if (res.success == "true") {
-                                    let instance = Toast('登录成功,欢迎您');
-                                    setTimeout(() => {
-                                        instance.close();
-                                    }, 2000);
-                                    this.$router.push({ name: 'home' })
-                                } else {
-                                    let instance = Toast('错误，用户不存在');
-                                    setTimeout(() => {
-                                        instance.close();
-                                    }, 2000);
-                                }
-                            })
-                        } else {
-                            let instance = Toast('错误，用户不存在');
-                            setTimeout(() => {
-                                instance.close();
-                            }, 2000);
-                        }
-                    })
-                } else {
-                    let instance = Toast('请输入验证码');
-                    setTimeout(() => {
-                        instance.close();
-                    }, 2000);
-                }
-            },
             handleReg() {
                 if (this.registerData.mobile == '') {
                     let instance = Toast('请输入手机号');
@@ -265,55 +224,58 @@
                         instance.close();
                     }, 2000);
                 } else {
-                    this.$axios.get('/jsp/wap/login/do/doRegister.jsp', { params: { code: this.registerData.code, mobile: this.registerData.mobile, pwd: this.registerData.pwd, email_: this.registerData.email_ } }).then(res => {
-                        // let instance = Toast('注册成功');
-                        // setTimeout(() => {
-                        //     instance.close();
-                        // }, 2000);
+                    this.$axios.get('/jsp/wap/login/do/doRegister.jsp', { params: { code: this.registerData.code, mobile: this.registerData.mobile, pwd: this.registerData.pwd, email_: this.registerData.email } }).then(res => {
                         if (this.login_checked) {
                             Cookies.set("userKey", res.data, { expires: 14 });
                         } else {
                             Cookies.set("userKey", res.data, { expires: 3 });
                         }
-                        this.$axios.post('/jsp/wap/login/do/doLogin.jsp', qs.stringify({ mobile: this.registerData.mobile, pwd: this.registerData.pwd, loginType: this.loginData.loginType })).then(res => {
-                            if (res.success == "true") {
-                                this.$router.push({ name: 'home' })
-                            } else {
-                                let instance = Toast(res.message);
-                                setTimeout(() => {
-                                    instance.close();
-                                }, 2000);
-                            }
-                        })
+                        if (res.success == "true") {
+                            this.$axios.post('/jsp/wap/login/do/doLogin.jsp', qs.stringify({ mobile: this.registerData.mobile, pwd: this.registerData.pwd, loginType: this.loginData.loginType })).then(res => {
+                                if (res.success == "true") {
+                                    this.$router.push({ name: 'home' })
+                                } else {
+                                    let instance = Toast(res.message);
+                                    setTimeout(() => {
+                                        instance.close();
+                                    }, 2000);
+                                }
+                            })
+                        } else {
+                            let instance = Toast(res.message);
+                            setTimeout(() => {
+                                instance.close();
+                            }, 2000);
+                        }
                     })
                 }
             },
             handleFindPwd() {
-                this.$axios.get(`/jsp/wap/center/do/doEditPwd.jsp`, qs.stringify(this.findPwd)).then(res => {
-                    console.log("找回密码", res)
-                    // if (res.success == "true") {
-                    //     if (this.login_checked) {
-                    //         Cookies.set("userKey", res.data, { expires: 14 })
-                    //     } else {
-                    //         Cookies.set("userKey", res.data, { expires: 3 })
-                    //     }
-                    //     let instance = Toast('登录成功');
-                    //     setTimeout(() => {
-                    //         instance.close();
-                    //     }, 2000);
-                    //     setTimeout(() => {
-                    //         this.$router.push({ name: "home" })
-                    //     }, 2000);
-                    // } else {
-                    //     let instance = Toast('账号或密码错误');
-                    //     setTimeout(() => {
-                    //         instance.close();
-                    //     }, 2000);
-                    // }
-                })
-            }
+                this.$axios.get("/jsp/wap/login/do/doEditPwd.jsp", {
+                    params: {
+                        code: this.forgetData.code,
+                        mobile: this.forgetData.mobile,
+                        newPwd: this.forgetData.newPwd,
+                        reNewPwd: this.forgetData.reNewPwd
+                    }
+                }).then(res => {
+                    if (res.success == "true") {
+                        let instance = Toast(res.message);
+                        setTimeout(() => {
+                            instance.close();
+                        }, 2000);
+                        setTimeout(() => {
+                            this.fail = true
+                        }, 2000);
+                    } else {
+                        let instance = Toast(res.message);
+                        setTimeout(() => {
+                            instance.close();
+                        }, 2000);
+                    }
+                });
+            },
         },
-
     };
 </script>
 <style scoped lang="scss">

@@ -7,11 +7,12 @@
                 <input class="oneInput" type="text" placeholder="例:广东某企业5000万元寻互联网项目" v-model="formData.title">
             </div>
             <div class="rows clearfix">
-                <span class="fll">所在地区</span><span>{{formData.regionProvinceId}},{{formData.regionCityId}},{{formData.regionCountyId}}</span>
+                <span class="fll">所在地区</span>
+                <span class="areaa"> {{province}},{{city}}, {{county}}</span>
                 <button class="Area flr" @click="showArea = true">请选择<i class="iconfont icon-xiangyou"></i></button>
             </div>
             <van-popup v-model="showArea" position="bottom" :overlay="true">
-                <van-area :area-list="areaList"  @cancel="onCancel" @confirm="onConfirm" @change="onChange2"></van-area>
+                <van-area :area-list="areaList"  @cancel="onCancel" @confirm="onConfirm"></van-area>
             </van-popup>
 
             <div class="rows">
@@ -28,10 +29,11 @@
             </div>
             <div class="rows clearfix">
                 <span class="fll">投资地区</span>
+                    <span class="areaa"> {{province1}},{{city1}}, {{county1}}</span>
                 <button class="Area flr" @click="showArea2 = true">请选择<i class="iconfont icon-xiangyou"></i></button>
             </div>
             <van-popup v-model="showArea2" position="bottom" :overlay="true">
-                    <van-area :area-list="areaList" @cancel="onCancel2" @confirm="onConfirm2" @change="onChange2"></van-area>
+                    <van-area :area-list="areaList" @cancel="onCancel2" @confirm="onConfirm2"></van-area>
                 </van-popup>
             <div class="rows">
                 <span>投资金额</span>
@@ -68,13 +70,13 @@
             </div>
             <div class="rows">
                 <span>投资期限</span>
-                <select class="twos" v-model="formData.expiryDateStartTimeStr">
+                <select class="twos" v-model="formData.validStartTimeStr">
                     <option value="1">2019</option>
                     <option value="1">2020</option>
                     <option value="1">2021</option>
                 </select>
                 <span style="margin-left:.3rem">--</span>
-                <select class="twos" v-model="formData.expiryDateEndTimeStr">
+                <select class="twos" v-model="formData.validEndTimeStr">
                     <option value="3">2019</option>
                     <option value="3">2020</option>
                     <option value="3">2021</option>
@@ -122,7 +124,6 @@
                     <span style="color:#f00">*</span>
                     <span class="desc">商业计划书、融资计划书等文件请在此上传</span>
                     <mt-button type="default" class="btn flr">添加文件</mt-button>
-                    <!-- <input type="file" class="file" action :http-request="uploadFlie" :file-list="fileList"> -->
                 </div>
             </div>
         </div>
@@ -3963,7 +3964,6 @@
                 showArea: false,
                 showArea2: false,
                 columns: ['1', '2', '3'],
-                templateData: "<p>lalala</p>",
                 // rules: {
                 //     minRepay: [{ validator: checkNumber, trigger: "blur" }],
                 //     pawnDiscountRateMin: [{ validator: checkNumber, trigger: "blur" }],
@@ -3983,8 +3983,8 @@
                     investRegionCountyId: "",
                     investAmount: "",
                     minRepay: "",
-                    expiryDateStartTimeStr: "",
-                    expiryDateEndTimeStr: "",
+                    validStartTimeStr: "",
+                    validEndTimeStr: "",
                     pawnDiscountRateMin: "",
                     pawnDiscountRateMax: "",
                     investRequire: "",
@@ -4020,9 +4020,13 @@
                 pawnTypes: [],
                 fileNames: [],
                 filePaths: [],
-
+                province:"",
+                province1:"",
+                city1:'',
+                city:'',
+                county1:"",
+                county:"",
                 show: true,
-
             };
         },
         methods: {
@@ -4062,8 +4066,8 @@
                         investRegionCountyId: this.formData.investRegionCountyId,
                         investAmount: this.formData.investAmount,
                         minRepay: this.formData.minRepay,
-                        expiryDateStartTimeStr: this.formData.expiryDateStartTimeStr,
-                        expiryDateEndTimeStr: this.formData.expiryDateEndTimeStr,
+                        validStartTimeStr: this.formData.validStartTimeStr,
+                        validEndTimeStr: this.formData.validEndTimeStr,
                         pawnDiscountRateMin: this.formData.pawnDiscountRateMin,
                         pawnDiscountRateMax: this.formData.pawnDiscountRateMax,
                         investRequire: this.formData.investRequire,
@@ -4097,8 +4101,8 @@
                         investRegionCountyId: this.formData.investRegionCountyId,
                         investAmount: this.formData.investAmount,
                         minRepay: this.formData.minRepay,
-                        expiryDateStartTimeStr: this.formData.expiryDateStartTimeStr,
-                        expiryDateEndTimeStr: this.formData.expiryDateEndTimeStr,
+                        validStartTimeStr: this.formData.validStartTimeStr,
+                        validEndTimeStr: this.formData.validEndTimeStr,
                         pawnDiscountRateMin: this.formData.pawnDiscountRateMin,
                         pawnDiscountRateMax: this.formData.pawnDiscountRateMax,
                         investRequire: this.formData.investRequire,
@@ -4159,75 +4163,43 @@
                 //     }
                 // });
             },
-            selected(e) {
-                this.formData.regionProvinceId = e.province.code;
-                this.formData.regionCityId = e.city.code;
-                this.formData.regionCountyId = e.area.code;
-            },
-            selected1(e) {
-                this.formData.investRegionProvinceId = e.province.code;
-                this.formData.investRegionCityId = e.city.code;
-                this.formData.investRegionCountyId = e.area.code;
-            },
             getData(id) {
                 this.$axios.get(`/jsp/wap/center/ctrl/jsonCapitalDetail.jsp?id=${id}`).then(res => {
                     console.log(res);
                     this.formData = res.data.capital;
                     if (res.data.capital.investIndustryStr != '') {
-                        this.investIndustrys = res.data.capital.investIndustryStr.split(",");
+                        this.investIndustrys = (res.data.capital.investIndustryStr || "").split(",");
                     }
                     if (res.data.capital.investStageStr != '') {
-                        this.investStages = res.data.capital.investStageStr.split(",");
+                        this.investStages = (res.data.capital.investStageStr || "").split(",");
                     }
                     if (res.data.capital.capitalSourceStr != '') {
-                        this.capitalSources = res.data.capital.capitalSourceStr.split(",");
+                        this.capitalSources = (res.data.capital.capitalSourceStr || "").split(",");
                     }
                     if (res.data.capital.investTypeStr != '') {
-                        this.investTypes = res.data.capital.investTypeStr.split(",");
+                        this.investTypes = (res.data.capital.investTypeStr || "").split(",");
                     }
                     // this.investTypes = res.data.capital.investTypeList
                     if (res.data.capital.riskControlStr != '') {
-                        this.riskControls = res.data.capital.riskControlStr.split(",");
+                        this.riskControls = (res.data.capital.riskControlStr || "").split(",");
                     }
                     if (res.data.capital.datumStr != '') {
-                        this.datums = res.data.capital.datumStr.split(",");
+                        this.datums = (res.data.capital.datumStr || "").split(",");
                     }
-                    if (res.data.capital.pawnTypesStr != '') {
-                        this.pawnTypes = res.data.capital.pawnTypesStr.split(",");
+                    if (res.data.capital.pawnTypeStr != '') {
+                        this.pawnTypes = (res.data.capital.pawnTypeStr || "").split(",");
                     }
                     this.capitalBodyList = res.data.capitalBodyList;
                     let capital = res.data.capital;
                     if (capital.regionNameStr != "") {
-                        this.provinceStr = capital.regionNameStr.split(",")[0];
-                        var cityStr = capital.regionNameStr.split(",")[1];
-                        if (this.provinceStr == "北京市" && cityStr == "市辖区") {
-                            cityStr = "北京城区";
-                        } else if (this.provinceStr == "天津市" && cityStr == "市辖区") {
-                            this.cityStr = "天津城区";
-                        } else if (this.provinceStr == "上海市" && cityStr == "市辖区") {
-                            this.cityStr = "上海城区";
-                        } else if (this.provinceStr == "重庆市" && cityStr == "市辖区") {
-                            this.cityStr = "重庆城区";
-                        } else {
-                            this.cityStr = capital.regionNameStr.split(",")[1];
-                        }
-                        this.countyStr = capital.regionNameStr.split(",")[2];
+                        this.province = capital.regionNameStr.split(",")[0];
+                        this.city = capital.regionNameStr.split(",")[1];
+                        this.county = capital.regionNameStr.split(",")[2];
                     }
                     if (capital.investRegionNameStr != "") {
-                        this.provinceStr1 = capital.investRegionNameStr.split(",")[0];
-                        var cityStr1 = capital.investRegionNameStr.split(",")[1];
-                        if (this.provinceStr1 == "北京市" && cityStr1 == "市辖区") {
-                            cityStr1 = "北京城区";
-                        } else if (this.provinceStr1 == "天津市" && cityStr1 == "市辖区") {
-                            this.cityStr1 = "天津城区";
-                        } else if (this.provinceStr1 == "上海市" && cityStr1 == "市辖区") {
-                            this.cityStr1 = "上海城区";
-                        } else if (this.provinceStr1 == "重庆市" && cityStr1 == "市辖区") {
-                            this.cityStr1 = "重庆城区";
-                        } else {
-                            this.cityStr1 = capital.investRegionNameStr.split(",")[1];
-                        }
-                        this.countyStr1 = capital.investRegionNameStr.split(",")[2];
+                        this.province1 = capital.investRegionNameStr.split(",")[0];
+                        this.city1 = capital.investRegionNameStr.split(",")[1];
+                        this.county1 = capital.investRegionNameStr.split(",")[2];
                     }
                     this.investAmountList = res.data.investAmountList;
                     this.investIndustryList = res.data.investIndustryList;
@@ -4274,21 +4246,28 @@
             },
             onConfirm(e){
                 console.log(e)
-                // this.formData.regionProvinceId = e.province_list.code;
-                // this.formData.regionCityId = e.city_list.code;
-                // this.formData.regionCountyId = e.country_list.code;
                 this.showArea = false
+                this.formData.regionProvinceId = e[0].code;
+                this.formData.regionCityId = e[1].code;
+                this.formData.regionCountyId = e[2].code;
+                this.city = e[1].name
+                this.province = e[0].name
+                this.county = e[2].name
             },
             onChange(e){
-                this.formData.regionProvinceId = e.province.code;
-                this.formData.regionCityId = e.city.code;
-                this.formData.regionCountyId = e.area.code;
+
             },
             onCancel2(){
                 this.showArea2 = false
             },
-            onConfirm2(){
+            onConfirm2(ele){
                 this.showArea2 = false
+                this.formData.regionProvinceId = ele[0].code;
+                this.formData.regionCityId = ele[1].code;
+                this.formData.regionCountyId = ele[2].code;
+                this.city1 = ele[1].name
+                this.province1 = ele[0].name
+                this.county1 = ele[2].name
             },
             onChange2(){
 
@@ -4308,6 +4287,10 @@
         background: #fff;
         border: 0;
         color: #666
+    }
+    .areaa{
+        margin-left: .2rem;
+        display: inline-block
     }
 
     .detail {

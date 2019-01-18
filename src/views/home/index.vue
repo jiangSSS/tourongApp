@@ -1,7 +1,8 @@
 <template>
     <div class="all">
         <div class="header">
-            <div class="searchBox" @click="$router.push('/search')">
+            <div class="searchBox">
+                    <!-- @click="$router.push('/search')" -->
                 <i class="iconfont icon-sousuo"></i>
             </div>
             <div class="logoBox">
@@ -68,10 +69,17 @@
                     <p class="row1">会员周报</p>
                     <div class="row2">
                         <span>2018年第二期 </span>
-                        <span> 点击阅读</span>
+                        <span @click="$router.push('/weekDetail')"> 点击阅读</span>
                     </div>
                 </div>
             </div>
+            <div class="issue">
+                <router-link to="/issueMoney">发布资金</router-link>
+                <router-link to="/issueProject">发布项目</router-link>
+                <router-link to="/demand">成为专家</router-link>
+
+            </div>
+
             <div>
                 <img src="../../../static/app/img/home/contentImg2.jpg" alt="">
             </div>
@@ -236,7 +244,7 @@
                 });
             },
             tokefu() {
-                window.open('https://tb.53kf.com/code/app/10193554/1', '_blank')
+                window.open("https://tb.53kf.com/code/app/10193554/1", "_blank");
             },
             getNewsList() {
                 this.$axios.get(`/jsp/wap/trNews/ctrl/jsonNewsPage.jsp`).then(res => {
@@ -245,10 +253,10 @@
                         this.pageList = res.data.pageList;
                     }
                 });
-            },
+            }
         },
         created() {
-            this.getNewsList()
+            this.getNewsList();
             this.getSwiper();
         }
     };
@@ -479,7 +487,7 @@
             font-weight: bold;
             padding-bottom: 0.1rem; // margin-bottom: .1rem;
             overflow: hidden;
-            height: .9rem;
+            height: 0.9rem;
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -544,16 +552,16 @@
             line-height: 2;
         }
         .messageTime span {
-            font-size: .2rem
+            font-size: 0.2rem;
         }
         .timestatus {
-            margin-left: .3rem
+            margin-left: 0.3rem;
         }
         .rightTime {
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
-            width: 2.4rem
+            width: 2.4rem;
         }
     }
 
@@ -571,9 +579,8 @@
         }
     }
 
-
     .nums {
-        width: 4.5rem
+        width: 4.5rem;
     }
 
     .newsDesc {
@@ -585,7 +592,17 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         width: 4.2rem;
-        font-size: .24rem;
-        margin-top: .1rem;
+        font-size: 0.24rem;
+        margin-top: 0.1rem;
+    }
+    .issue{
+        display: flex;
+        justify-content: space-around
+    }
+    .issue a{
+        padding: .4rem 0;
+        font-size: .34rem;
+        color: #666
+        
     }
 </style>

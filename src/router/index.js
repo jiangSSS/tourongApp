@@ -120,10 +120,33 @@ const router = new Router({
     {
       path: '/message',
       name: 'message',
+      redirect:"/message/sysMessage",
       component: () => import("@/views/message/index.vue"),
       meta: {
         title: "我的消息"
-      }
+      },
+      children:[
+        {
+          path: 'sysMessage',
+          name: 'sysMessage',
+          component: () => import("@/views/message/sysMessage.vue"),
+        },
+        {
+          path: 'stateMoney',
+          name: 'stateMoney',
+          component: () => import("@/views/message/stateMoney.vue"),
+        },
+        {
+          path: 'projectProgress',
+          name: 'projectProgress',
+          component: () => import("@/views/message/projectProgress.vue"),
+        },
+        {
+          path: 'sysMessage',
+          name: 'sysMessage',
+          component: () => import("@/views/message/sysMessage.vue"),
+        },
+      ]
     },
     {
       path: '/money/moneyDetail',
@@ -134,7 +157,7 @@ const router = new Router({
       }
     },
     {
-      path: '/money/progress',
+      path: '/projectProgress',
       name: 'progress',
       component: () => import("@/views/money/progress.vue"),
       meta: {
@@ -211,6 +234,14 @@ const router = new Router({
       component: () => import("@/views/my/weekList.vue"),
       meta: {
         title: "周报列表"
+      }
+    },
+    {
+      path: "/weekDetail",
+      name: "weekDetail",
+      component: () => import("@/views/my/weekDetail.vue"),
+      meta: {
+        title: "周报详情"
       }
     },
     {
@@ -299,10 +330,28 @@ const router = new Router({
     {
       path: "/demand",
       name: "demand",
-      component: () => import("@/views/my/demand.vue"),
+      redirect:"/demand/demanda",
+      component: () => import("@/views/my/demand/index.vue"),
       meta: {
         title: "需求填报"
-      }
+      },
+      children:[
+        {
+          path: "demanda",
+          name: "demanda",
+          component: () => import("@/views/my/demand/demand.vue"),
+        },
+        {
+          path: "recommend",
+          name: "recommend",
+          component: () => import("@/views/my/demand/recommend.vue"),
+        },
+        {
+          path: "other",
+          name: "other",
+          component: () => import("@/views/my/demand/other.vue"),
+        },
+      ]
     },
     {
       path: "/service",
@@ -324,6 +373,14 @@ const router = new Router({
       path: "/search",
       name: "search",
       component: () => import("@/views/search/index.vue"),
+    },
+    {
+      path: "/agreement",
+      name: "agreement",
+      component: () => import("@/views/login/desc.vue"),
+      meta:{
+        title:"服务协议"
+      }
     },
   ],
 })

@@ -9,7 +9,7 @@
             <i class="iconfont icon-icon-project"></i>
             <div class="tab-title">项目库</div>
         </router-link>
-        <router-link to="/message" class="tab-item" :class="{active:$route.name === 'message'}">
+        <router-link to="/message" class="tab-item" :class="{active:$route.name === 'sysMessage'}">
             <i class="iconfont icon-xiaoxi"></i>
             <div class="tab-title">消息</div>
         </router-link>

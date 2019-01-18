@@ -16,9 +16,9 @@
           <span class="star">* </span>
           <span>认证材料</span>
         </div>
-        <div class="flr sendFile">
-          点击上传文件
-        </div>
+        <!-- <input class="flr sendFile" type="file" title="点击上传文件"> -->
+          <!-- 点击上传文件
+        </div> -->
       </div>
       <div class="">
         <div class="rows">
@@ -70,6 +70,7 @@
         var fileNames = this.attestForm.fileNames.join(';=;')
         var filePaths = this.attestForm.filePaths.join(',')
         this.$axios.get('/jsp/wap/center/do/doAuthentication.jsp', { params: { type: this.attestForm.type, brief: this.attestForm.brief, fileNames, filePaths } }).then(res => {
+          console.log(res)
           if (res.success == "true") {
             let instance = Toast('上传认证资料成功');
             setTimeout(() => {

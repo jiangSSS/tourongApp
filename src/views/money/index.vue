@@ -102,12 +102,15 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div>
-                                    <div class="noData" v-if="this.totalCount > this.pageList.length">加载中...</div>
-                                    <div class="noData" v-else>--- 没有更多数据了 ---</div>
-                                </div> -->
+                                <mu-dialog width="400" center class="applyDialog" :open.sync="isShowApply">
+                                    <select class="oneRows" v-model="projectId">
+                                        <option :value="item.id" v-for="item in myMoney" :key="item.index" :label="item.title">{{item}}</option>
+                                    </select>
+                                    <mu-button class="applyBtn" @click="closeApply">确认</mu-button>
+                                    <mu-button class="applyBtn" @click="cancelApply">取消</mu-button>
+                                </mu-dialog>
                             </div>
-                             <div class="noData">--- 没有更多数据了 ---</div>
+                            <div class="noData">--- 没有更多数据了 ---</div>
                         </div>
                         <Footer class="footer"></Footer>
                     </div>
@@ -132,11 +135,17 @@
         },
         data() {
             return {
+                isShowApply: false,
                 pageList: [],
                 loading: false,
                 pn: 1,
                 pageNumber: 1,
                 totalCount: [],
+                myMoney: [],
+                projectId: "",
+                moneyId: "",
+                myMoney_Count: 0,
+                myMoney_pagination: false,
                 // 
                 isShow: false,
                 isShow1: false,
@@ -173,6 +182,37 @@
                 } else {
                     this.$router.push('/login')
                 }
+            },
+            cancelApply() {
+                this.isShowApply = false
+            },
+            // 确认投递 关闭投递框
+            closeApply() {
+                let activityId = this.$route.query.id
+                this.$axios.get(`/jsp/wap/trActivity/do/doSignUp.jsp`, {
+                    params: {
+                        activityId,
+                        memberName: this.formData.memberName,
+                        memberMobile: this.formData.memberMobile,
+                        remark: this.formData.remark
+                    }
+                }).then(res => {
+                    console.log("活动报名", res)
+                    if (res.success == "true") {
+                        let instance = Toast('报名成功');
+                        setTimeout(() => {
+                            instance.close();
+                        }, 2000);
+                    } else {
+                        let instance = Toast(res.message);
+                        setTimeout(() => {
+                            instance.close();
+                        }, 2000);
+                    }
+                })
+                setTimeout(() => {
+                    this.isShowApply = false;
+                }, 500);
             },
             // 打开筛选
             handleToggleDrawer() {
@@ -330,10 +370,10 @@
                 this.$refs.drawerLayout.toggle(false);
 
             },
-            //  筛选
+            //  搜索
             search() {
                 this.loading = true;
-                this.$axios.get("/jsp/wap/trCapital/ctrl/jsonCapitalPage.jsp", {params: { investIndustrys: this.investIndustrys, investTypes: this.investTypes, regions: this.regions, investRegions: this.investRegions, investAmounts: this.investAmounts, title: this.title } })
+                this.$axios.get("/jsp/wap/trCapital/ctrl/jsonCapitalPage.jsp", { params: { investIndustrys: this.investIndustrys, investTypes: this.investTypes, regions: this.regions, investRegions: this.investRegions, investAmounts: this.investAmounts, title: this.title } })
                     .then(res => {
                         if (res.success == "true") {
                             this.pageList = res.data.pageList;
@@ -343,7 +383,18 @@
                         }
                     });
             },
-            sendMoney(){
+            // 获取我的资金
+            getMyMoney(pn) {
+                this.$axios.get("/jsp/wap/center/ctrl/jsonIssueProjectList.jsp", { params: { pageNumber: pn } }).then(res => {
+                    console.log("11aazz", res)
+                    this.myMoney = res.data.pageList;
+                    this.myMoney_Count = Number(res.data.pagination.totalCount);
+                    if (this.myMoney_Count > 10) {
+                        this.myMoney_pagination = true;
+                    }
+                });
+            },
+            sendMoney() {
                 if (Cookies.get('userKey')) {
                     this.$router.push('/issueMoney')
                 } else {
@@ -354,6 +405,7 @@
         created() {
             this.getDatalList(this.investAmounts, this.investIndustrys, this.investRegions, this.investTypes, this.regions)
             this.getTypeData()
+            this.getMyMoney()
         }
     }
 </script>
@@ -447,6 +499,11 @@
         color: rgb( 62, 58, 57);
         font-weight: bold;
         text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
 
     .moneyDetail {
@@ -578,5 +635,40 @@
 
     #moneyType {
         width: 2rem
+    }
+
+    /* 投递框 */
+
+    .applyDialog {
+        text-align: center;
+        margin: 0 auto;
+        input {
+            border: 0;
+            border-bottom: 1px solid rgb(237, 237, 237);
+            line-height: 2.6;
+            margin-left: .1rem;
+            width: 80%;
+        }
+        .iconfont {
+            font-size: .6rem; // padding-top: 1rem;
+            display: inline-block
+        }
+    }
+
+    .dialogTitle {
+        font-weight: bold;
+        font-size: .34rem
+    }
+
+    .applyBtn {
+        /* width: 90%; */
+        background: #005982;
+        color: #fff;
+        text-align: left;
+        margin-top: .4rem;
+    }
+
+    .oneRows {
+        width: 5.3rem !important;
     }
 </style>

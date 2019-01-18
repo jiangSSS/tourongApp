@@ -50,6 +50,7 @@
                     </div>
                     <div class="rows clearfix">
                         <span class="fll">投资地区</span>
+                         <span class="areaa"> {{province1}},{{city1}}, {{county1}}</span>
                         <button class="Area flr" @click="show = true">请选择
                             <i class="iconfont icon-xiangyou"></i>
                         </button>
@@ -3986,6 +3987,9 @@
                 fileNames: [],
                 filePaths: [],
                 fileList: [],
+                city1:"",
+                province1:"",
+                county1:""
             }
         },
         methods: {
@@ -4136,20 +4140,9 @@
                     this.formData = res.data.project;
                     let project = res.data.project;
                     if (project.regionNameStr != "") {
-                        this.provinceStr = project.regionNameStr.split(",")[0];
-                        var cityStr = project.regionNameStr.split(",")[1];
-                        if (this.provinceStr == "北京市" && cityStr == "市辖区") {
-                            cityStr = "北京城区";
-                        } else if (this.provinceStr == "天津市" && cityStr == "市辖区") {
-                            this.cityStr = "天津城区";
-                        } else if (this.provinceStr == "上海市" && cityStr == "市辖区") {
-                            this.cityStr = "上海城区";
-                        } else if (this.provinceStr == "重庆市" && cityStr == "市辖区") {
-                            this.cityStr = "重庆城区";
-                        } else {
-                            this.cityStr = project.regionNameStr.split(",")[1];
-                        }
-                        this.countyStr = project.regionNameStr.split(",")[2];
+                        this.province1 = project.regionNameStr.split(",")[0];                                            
+                        this.city1 = project.regionNameStr.split(",")[1];
+                        this.county1 = project.regionNameStr.split(",")[2];
                     }
                     this.financeBodyList = res.data.financeBodyList;
                     this.industryList = res.data.industryList;
@@ -4243,8 +4236,14 @@
             onCancel() {
                 this.show = false
             },
-            onConfirm() {
+            onConfirm(ele) {
                 this.show = false
+                this.formData.regionProvinceId = ele[0].code;
+                this.formData.regionCityId = ele[1].code;
+                this.formData.regionCountyId = ele[2].code;
+                this.city1 = ele[1].name
+                this.province1 = ele[0].name
+                this.county1 = ele[2].name
             },
             onChange() {
 
@@ -4265,6 +4264,9 @@
         background: #fff;
         border: 0;
         color: #666
+    }
+    .areaa{
+        margin-left: .2rem
     }
 
     .detail {

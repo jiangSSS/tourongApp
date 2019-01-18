@@ -1,37 +1,32 @@
 <template>
     <div class="containerAll">
-        <!-- <Header></Header> -->
+        <!-- <Header @click="$router.push('/my')"></Header> -->
         <div class="header">
-            <mt-header title="我的消息" class="header-title">
-                <!-- <mt-button icon="back" slot="left" @click="$router.push('/home')"></mt-button> -->
+            <mt-header title="需求填报" class="header-title">
+                <mt-button icon="back" slot="left" @click="$router.push('/my')"></mt-button>
             </mt-header>
         </div>
         <div class="navTab">
             <div class="nav fll">
-                <router-link :to="{name:'sysMessage'}">系统消息</router-link>
-            </div>
-            <div class="nav fll" @click="tokefu">
-                <div>在线客服</div> 
+                <router-link :to="{name:'demanda'}">找专家</router-link>
             </div>
             <div class="nav fll">
-                <router-link :to="{name:'projectProgress'}">项目进展</router-link>
+                <router-link :to="{name:'recommend'}">推荐专家</router-link>
             </div>
             <div class="nav fll">
-                <router-link :to="{name:'stateMoney'}">资金动态</router-link>
+                <router-link :to="{name:'other'}">其他需求</router-link>
             </div>
         </div>
         <router-view></router-view>
-        <Footer></Footer>
+
     </div>
 </template>
 
 <script>
     import Header from "@/components/Header.vue"
-    import Footer from "@/components/Bottom.vue"
     export default {
         components: {
-            Header,
-            Footer
+            Header
         },
         data() {
             return {
@@ -41,11 +36,6 @@
                     
             }
         },
-        methods: {
-            tokefu(){
-                window.open('https://tb.53kf.com/code/app/10193554/1','_blank')
-            },   
-        }
     }
 </script>
 <style scoped lang="scss">
@@ -72,6 +62,7 @@
         color: #999;
         border-top: 1px solid #f3f5f7;
         padding: .2rem 0;
+        border-bottom: .2rem solid #f3f5f7
     }
 
     .navTab a {

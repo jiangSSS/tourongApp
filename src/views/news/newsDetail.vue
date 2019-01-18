@@ -1,49 +1,64 @@
 <template>
-    <div class="all" :data="newsDetail">
+    <div>
         <Header></Header>
-        <div class="containerAll">
-            <div class="detail">
-                <div class="headerWarp">
-                    <div class="title">{{newsDetail.title}}</div>
-                    <div class="clearfix">
-                        <div class="fll">
-                            <span>作者：</span>
-                            <span>{{newsDetail.author}}</span>
-                            <span>(来源：
-                                <span>{{newsDetail.source}}</span> )</span>
-                        </div>
-                        <div class="flr">
-                            <span>{{newsDetail.addTimeStr}}</span>
+        <!-- <div class="header">
+            <mt-header title="资讯列表" class="header-title">
+                <mt-button icon="back" slot="left" @click="$router.push('/news')"></mt-button>
+            </mt-header>
+        </div> -->
+        <div class="all" :data="newsDetail">
+            <div class="containerAll">
+                <div class="detail">
+                    <div class="headerWarp">
+                        <div class="title">{{newsDetail.title}}</div>
+                        <div class="clearfix">
+                            <div class="fll">
+                                <span>作者：</span>
+                                <span>{{newsDetail.author}}</span>
+                                <span>(来源：
+                                    <span>{{newsDetail.source}}</span> )</span>
+                            </div>
+                            <div class="flr">
+                                <span>{{newsDetail.addTimeStr}}</span>
+                            </div>
                         </div>
                     </div>
+                    <div>
+                        <div class="contentImg">
+                            <img :src="$url + newsDetail.imgPath" alt="">
+                        </div>
+                        <div class="contentText" v-html="newsDetail.content"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <div v-if="good" @click="isGood">
+                    <i class="iconfont icon-dianzan" style="color:#f00"></i>
+                    <span>{{newsDetail.greatNum}}</span>
+                </div>
+                <div v-else @click="noGood">
+                    <i class="iconfont icon-dianzan"></i>
+                    <span>{{newsDetail.greatNum}}</span>
+                </div>
+                <div @click="$router.push({name:'comment',query:{id}})">
+                    <i class="iconfont icon-weibiaoti-"></i>
+                    <span>{{countComment}}</span>
                 </div>
                 <div>
-                    <div class="contentImg">
-                        <img :src="$url + newsDetail.imgPath" alt="">
-                    </div>
-                    <div class="contentText" v-html="newsDetail.content"></div>
+                    <i class="iconfont icon-share"></i>
+                    <span>分享</span>
                 </div>
-            </div>
-        </div>
-        <div class="footer">
-            <div v-if="good" @click="isGood"><i class="iconfont icon-dianzan" style="color:#f00"></i><span>{{newsDetail.greatNum}}</span></div>
-            <div v-else @click="noGood"><i class="iconfont icon-dianzan"></i><span>{{newsDetail.greatNum}}</span></div>
-            <div @click="$router.push('/news/newsComment')">
-                <i class="iconfont icon-weibiaoti-"></i>
-                <span>60</span>
-            </div>
-            <div>
-                <i class="iconfont icon-share"></i>
-                <span>分享</span>
             </div>
         </div>
     </div>
+
 </template>
 
 <script>
     import Header from "@/components/Header.vue"
     import Footer from "@/components/Bottom.vue"
     import { Toast } from "mint-ui"
+    import * as Cookies from 'js-cookie'
 
     export default {
         components: {
@@ -56,6 +71,7 @@
                 id: "",
                 good: 0,
                 newsDetail: [],
+                countComment: ""
             }
         },
         methods: {
@@ -65,7 +81,17 @@
                 this.$axios.get(`/jsp/wap/trNews/ctrl/jsonNewsDetail.jsp?id=${this.id}`).then(res => {
                     console.log("新闻详情", res)
                     this.newsDetail = res.data
+                    this.newsDetail.greatNum = Number(res.data.greatNum)
                 })
+                if (Cookies.get('userKey') && this.$store.state.userinfo.headImgPath != '') {
+                    this.avatar = this.$store.state.userinfo.headImgPath
+                }
+                if (Cookies.get('userKey') && this.$store.state.userinfo.name != '') {
+                    this.memberName = this.$store.state.userinfo.name
+                }
+                if (Cookies.get('userKey') && this.$store.state.userinfo.provinceStr != '') {
+                    this.provinceStr = this.$store.state.userinfo.provinceStr
+                }
             },
             // 是否点赞
             getGood() {
@@ -82,7 +108,7 @@
                         let instance = Toast('已点赞');
                         setTimeout(() => {
                             instance.close();
-                        }, 1000);
+                        }, 500);
                         this.good = 1
                         this.newsDetail.greatNum = Number(this.newsDetail.greatNum + 1)
                     }
@@ -96,16 +122,24 @@
                         let instance = Toast('已取消点赞');
                         setTimeout(() => {
                             instance.close();
-                        }, 1000);
+                        }, 500);
                         this.good = 0
                         this.newsDetail.greatNum = Number(this.newsDetail.greatNum - 1)
                     }
                 })
+            },
+            getComment() {
+                this.id = this.$route.query.id
+                this.$axios.get(`/jsp/wap/trNews/ctrl/jsonCommentPage.jsp?id=${this.id}`).then(res => {
+                    this.countComment = Number(res.data.pagination.totalCount)
+                })
             }
+
         },
         created() {
             this.getNewsDetail()
             this.getGood()
+            this.getComment()
         }
     }
 </script>
@@ -115,6 +149,23 @@
     .containerAll {
         background: #f3f5f7;
         margin-bottom: 1rem
+    }
+
+    .mint-header {
+        background: #fff !important;
+        color: #333 !important;
+        position: fixed !important;
+        height: 0.86rem;
+        top: 0;
+        right: 0;
+        left: 0;
+        width: 100%;
+        font-size: .4rem !important;
+        z-index: 810
+    }
+
+    .mintui-back:before {
+        font-size: .3rem !important
     }
 
     img {
