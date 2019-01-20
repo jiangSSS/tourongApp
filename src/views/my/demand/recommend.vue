@@ -77,9 +77,18 @@
     }
 
     /deep/ .mint-field .mint-cell-title {
-        width: 1.2rem;
+        width: 1.4rem;
         text-align: right;
         margin-right: .2rem
+    }
+    /deep/ .mint-field-core{
+        border: 1px solid #ccc
+    }
+    /deep/ .mint-cell-wrapper{
+        background: none;
+    }
+    /deep/ .mint-field-core{
+        padding: 0 .1rem
     }
 
     .container_warp {
