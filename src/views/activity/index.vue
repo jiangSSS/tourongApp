@@ -68,7 +68,7 @@
                                                 </div>
                                             </div>
                                             <mt-button type="default" class="flr" :class="item.status == 1 ? 'applyBtn' : 'overBtn'" @click="$router.push({name:'activityDetail',query:{id:item.id}})">
-                                                {{item.status == 1 ? '我要报名' :'' + item.status == 0 ? '尚未开始':'' + item.status == 3 ? '活动结束' : ''}}查看往期
+                                                {{item.status == 1 ? '立即报名' :'' + item.status == 0 ? '尚未开始':'' + item.status == 3 ? '活动结束' : ''}}查看往期
                                             </mt-button>
                                         </div>
                                     </div>

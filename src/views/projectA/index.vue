@@ -12,7 +12,8 @@
                                 <i class="iconfont icon-xiangshang flr" v-else @click="handleCloseList"></i>
                             </div>
                             <div class="type" v-show="isShow">
-                                <span class="radioItem" v-for="(item,index) in financingWayList" :key="index" :class="{active:item.checked}" @click="wayCheckItem(item.dataValue,index)">{{item.dataName}}</span>
+                                <span class="radioItem" v-for="(item,index) in financingWayList" :key="index" :class="{active:item.checked}"
+                                    @click="wayCheckItem(item.dataValue,index)">{{item.dataName}}</span>
                             </div>
                             <div class="sbuTitle clearfix">
                                 <span class="fll">所属行业（可多选）</span>
@@ -21,7 +22,8 @@
                             </div>
                             <div class="type" v-show="isShow1">
                                 <van-checkbox-group v-model="result" @change="industryItem">
-                                    <van-checkbox v-for="(item, index) in industryList" :key="index" :name="item" class="checkItem" checked-color="#005982">
+                                    <van-checkbox v-for="(item, index) in industryList" :key="index" :name="item" class="checkItem"
+                                        checked-color="#005982">
                                         {{ item.dataName }}
                                     </van-checkbox>
                                 </van-checkbox-group>
@@ -34,7 +36,8 @@
                             </div>
                             <div class="type" v-show="isShow2">
                                 <van-checkbox-group v-model="area" @change="areaItem">
-                                    <van-checkbox v-for="(item, index) in regionList" :key="index" :name="item" class="checkItem" checked-color="#005982">
+                                    <van-checkbox v-for="(item, index) in regionList" :key="index" :name="item" class="checkItem"
+                                        checked-color="#005982">
                                         {{ item.dataName }}
                                     </van-checkbox>
                                 </van-checkbox-group>
@@ -50,7 +53,8 @@
                                 <i class="iconfont icon-xiangshang flr" v-else @click="handleCloseList3"></i>
                             </div>
                             <div class="type" v-show="isShow3">
-                                <div v-for="(item, index) in financingMoneyList" :key="index" class="radioItem" :class="{active:item.checked}" @click="moneyCheckItem(item.dataValue,index)">{{item.dataName}}</div>
+                                <div v-for="(item, index) in financingMoneyList" :key="index" class="radioItem" :class="{active:item.checked}"
+                                    @click="moneyCheckItem(item.dataValue,index)">{{item.dataName}}</div>
                             </div>
                         </div>
                         <div class="clearfix sureChoose">
@@ -80,7 +84,7 @@
                             </div>
                             <div v-infinite-scroll="loadMore" infinite-scroll-disabled="loading">
                                 <div class="projectList" v-for="(item,index) in pageList" :key="index">
-                                    <router-link :to="{path:'/project',query:{id:item.id}}">
+                                    <router-link :to="{path:'/projectA/projectDetail',query:{id:item.id}}">
                                         <div class="projectTitle">{{item.title}}</div>
                                         <div class="projectDetail">{{item.brief}}</div>
                                     </router-link>
@@ -89,7 +93,7 @@
                                             <i class="iconfont icon-shijian"></i>
                                             <span>{{item.addTimeStr}}</span>
                                         </div>
-                                        <div class="sendBtn flr" @click="handleCustomer">
+                                        <div class="sendBtn flr" @click="handleCustomer(item.id)">
                                             <!-- {{item.sendBtn}} -->
                                             约见项目方
                                         </div>
@@ -99,6 +103,13 @@
                                     <div class="noData" v-if="this.totalCount > this.pageList.length">加载中...</div>
                                     <div class="noData" v-else>--- 没有更多数据了 ---</div>
                                 </div> -->
+                                <mu-dialog width="400" center class="applyDialog" :open.sync="isShowApply">
+                                    <select class="oneRows" v-model="moneyId">
+                                        <option :value="item.id" v-for="item in myMoney" :key="item.index" :label="item.title">{{item.title}}</option>
+                                    </select>
+                                    <mu-button class="applyBtn" @click="closeApply">确认</mu-button>
+                                    <mu-button class="applyBtn" @click="isShowApply = false">取消</mu-button>
+                                </mu-dialog>
                             </div>
                             <div class="noData">--- 没有更多数据了 ---</div>
                         </div>
@@ -116,6 +127,7 @@
     import Footer from "@/components/Bottom.vue";
     // import Choose from "@/views/projectA/choose.vue";
     import { Dialog } from "vant";
+    import { Toast } from "mint-ui"
     import * as Cookies from 'js-cookie'
     export default {
         components: {
@@ -152,38 +164,106 @@
                 financingWays: "",
                 financingMoneys: "",
 
-                title: ""
+                title: "",
+
+                isShowApply: false,
+                myMoney: [],
+                projectId: "",
+                moneyId: "",
+                myMoney_Count: 0,
+                myMoney_pagination: false,
 
             };
         },
         methods: {
-            handleCustomer(id) {
-                Dialog.alert({
-                    message: "提交成功，平台会尽快为你安排。"
-                }).then(() => {
-                    let id = this.$route.query.id
-                    this.$axios.get(`/jsp/wap/trProject/do/doBespoke.jsp?id=${id}`).then(res => {
-                        console.log("约见项目方", res)
+            // handleCustomer(id) {
+            //     Dialog.alert({
+            //         message: "提交成功，平台会尽快为你安排。"
+            //     }).then(() => {
+            //         let id = this.$route.query.id
+            //         this.$axios.get(`/jsp/wap/trProject/do/doBespoke.jsp?id=${id}`).then(res => {
+            //             console.log("约见项目方", res)
+            //         })
+            //     });
+            // },
+
+            // 获取我的资金列表
+            getMyMoney(pn) {
+                this.$axios
+                    .get("/jsp/wap/center/ctrl/jsonIssueCapitalList.jsp", {
+                        params: { pageNumber: pn }
                     })
-                });
+                    .then(res => {
+                        this.myMoney = res.data.pageList;
+                        var myMoney = res.data.pageList
+                        if (myMoney.length > 0) {
+                            this.moneyId = myMoney[0].id
+                        }
+                        this.myMoney_Count = Number(res.data.pagination.totalCount);
+                    });
+            },
+            // 约见项目方
+            handleCustomer(id) {
+                if (Cookies.get("userKey")) {
+                    // if (this.myMoney.length == 0) {
+                    //     let instance = Toast('您还没有发布资金，请先发布资金');
+                    //     setTimeout(() => {
+                    //         instance.close();
+                    //     }, 2000);
+                    // } else {
+                        this.isShowApply = true;
+                        this.projectId = id;
+                    // }
+                } 
+                // else {
+                //     let instance = Toast('您还未登录，请先登录');
+                //     setTimeout(() => {
+                //         instance.close();
+                //     }, 2000);
+                // }
             },
 
-            // handleCustomer(id) {
-            //     if (Cookies.get("userKey")) {
-            //         if (this.myMoney.length == 0) {
-            //             this.success = false;
-            //             this.hint = "您还没有发布资金，请先发布资金";
-            //             this.toast_show = true;
-            //         } else {
-            //             this.dialogFormVisible = true;
-            //             this.projectId = id;
-            //         }
-            //     } else {
-            //         this.success = false;
-            //         this.hint = "您未登录，请先登录";
-            //         this.toast_show = false;
-            //     }
-            // },
+            // 确认投递 关闭投递框
+            closeApply() {
+                this.$axios.get("/jsp/wap/trCapital/do/doDeliver.jsp", {
+                    params: { id: this.moneyId, projectId: this.projectId }
+                })
+                    .then(res => {
+                        if (res.success == "true") {
+                            let instance = Toast('项目投递成功，平台将尽快为您安排');
+                            setTimeout(() => {
+                                instance.close();
+                            }, 2000);
+                        } else {
+                            let instance = Toast('项目投递失败，请您检查网络或重试');
+                            setTimeout(() => {
+                                instance.close();
+                            }, 2000);
+                        }
+                    });
+                setTimeout(() => {
+                    this.isShowApply = false;
+                }, 500);
+            },
+            // 
+            closeApply() {
+                this.$axios.get("/jsp/wap/trCapital/do/doDeliver.jsp", {
+                    params: { projectId: this.moneyId, id: this.projectId }
+                })
+                    .then(res => {
+                        if (res.success == "true") {
+                            let instance = Toast('项目约谈成功，平台将尽快为您安排');
+                            setTimeout(() => {
+                                instance.close();
+                            }, 2000);
+                        } else {
+                            let instance = Toast('项目约谈失败，请您检查网络或重试');
+                            setTimeout(() => {
+                                instance.close();
+                            }, 2000);
+                        }
+                    });
+            },
             // 打开筛选
             handleToggleDrawer() {
                 this.$refs.drawerLayout.toggle();
@@ -363,6 +443,9 @@
         created() {
             this.getProjectList(this.financingMoneys, this.financingWays, this.industrys, this.regions)
             this.getTypeData()
+            if (Cookies.get("userKey")) {
+                this.getMyMoney()
+            }
         }
     };
 </script>
@@ -466,9 +549,11 @@
         span {
             font-size: .22rem;
         }
+
         .iconfont {
             font-size: .2rem !important
         }
+
         font-family: "PingFang";
         color: #ccc;
         line-height: 1.385;
@@ -526,7 +611,9 @@
 
     .input_search::-webkit-input-placeholder {
         padding-left: 0.3rem;
-    } // -------筛选--------
+    }
+
+    // -------筛选--------
     .chooseBox {
         background: #fff;
     }
@@ -546,7 +633,7 @@
     .sbuTitle {
         font-size: .28rem;
         font-family: "PingFang";
-        color: rgb( 51, 51, 51);
+        color: rgb(51, 51, 51);
         font-weight: bold;
         line-height: 4;
         padding: 0 .2rem;
@@ -579,7 +666,7 @@
 
     .radioItem {
         background: #eee;
-        color: rgb( 102, 102, 102);
+        color: rgb(102, 102, 102);
         width: 1.66rem;
         height: .6rem;
         line-height: .6rem;
@@ -621,5 +708,17 @@
 
     #moneyType {
         width: 2rem
+    }
+
+    .applyBtn {
+        /* width: 90%; */
+        background: #005982;
+        color: #fff;
+        text-align: left;
+        margin-top: 0.4rem;
+    }
+
+    .oneRows {
+        width: 4.6rem !important;
     }
 </style>

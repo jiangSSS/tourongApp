@@ -440,7 +440,7 @@
         }
         .wellImg {
             width: 100%;
-            height: 3rem;
+            // height: 3rem;
         }
         .wellContent {
             font-size: 0.24rem;
@@ -543,7 +543,7 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             width: 80%;
-            /* line-height: 2; */
+            // line-height: 2;
         }
         .messageTime {
             font-size: 0.2rem;
@@ -563,6 +563,9 @@
             text-overflow: ellipsis;
             width: 2.4rem;
         }
+    }
+    .titleBox{
+        margin-top: .15rem
     }
 
     .dian {

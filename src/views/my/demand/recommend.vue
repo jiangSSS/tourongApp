@@ -51,13 +51,18 @@
                 }).then(res => {
                     console.log("推荐专家", res)
                     if (res.message = "true") {
-                        let instance = Toast("推荐成功");
+                        let instance = Toast("提交成功！我们客服人员会尽快与您联系");
                         setTimeout(() => {
                             instance.close();
                         }, 2000);
                         setTimeout(()=>{
                             this.$router.push("/my")
                         },2000)
+                    }else{
+                        let instance = Toast("提交失败，请检查网络或重试");
+                        setTimeout(() => {
+                            instance.close();
+                        }, 2000);
                     }
                 })
                 // });

@@ -77,15 +77,6 @@ const router = new Router({
       }
     },
     {
-      path: '/projectA/detail',
-      name: 'projectDetail',
-      component: () => import("@/views/projectA/projectDetail.vue"),
-      meta: {
-        title: "项目详情",
-      }
-    },
-
-    {
       path: '/comments',
       name: 'comments',
       component: () => import("@/views/news/comments.vue"),
@@ -94,8 +85,8 @@ const router = new Router({
       }
     },
     {
-      path: '/project',
-      name: 'project',
+      path: '/projectA/projectDetail',
+      name: 'projectDetail',
       component: () => import("@/views/project/index.vue"),
       meta: {
         title: "项目介绍"

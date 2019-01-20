@@ -292,7 +292,7 @@
         created(){
             this.getProjectDetail()
             this.getFollow()
-            this.getProgress()
+            this.getProgress()/*  */
         }
     }
 </script>
